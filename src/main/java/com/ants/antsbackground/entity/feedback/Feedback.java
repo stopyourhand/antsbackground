@@ -13,8 +13,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class Feedback {
-    /** 反馈编号 */
+    /** 主键 */
     private Integer fbId;
+    /** 反馈编号 */
+    private String fbSerial;
     /** 用户编号 */
     private Integer userId;
     /** 反馈内容 */
@@ -27,5 +29,7 @@ public class Feedback {
     private String userMobile;
     /** 反馈人姓名 */
     private String userName;
+    /** 判断反馈信息状态: 0 正常,1回收站( 1 删除,2 撤销删除, 3 彻底删除)*/
+    private Integer state;
 
 }

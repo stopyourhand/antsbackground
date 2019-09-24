@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.antsbackground.mapper.announcement.AnnouncementMapper">
+
+    <!--获取公告列表信息-->
+    <select id="listAnnouncement" parameterType="Map" resultType="com.ants.antsbackground.entity.announcement.Announcement">
+        SELECT annId,annTitle,annContent,annTime
+              FROM ants_management_announcement
+                  LiMIT #{head},#{length}
+    </select>
+
+    <!--获取公告的数量-->
+    <select id="countAnnouncementNumber" resultType="Integer">
+        SELECT COUNT(*) FROM ants_management_announcement
+    </select>
+
+    <!--增加新公告-->
+    <insert id="insertAnnouncement" parameterType="com.ants.antsbackground.entity.announcement.Announcement">
+        INSERT INTO ants_management_announcement(annId,annTitle,annContent,annTime,state)
+               VALUES (#{annId},#{annTitle},#{annContent},#{annTime},#{state})
+    </insert>
+
+
+    <!--彻底删除公告反馈信息-->
+    <delete id="deleteAnnouncement" parameterType="Integer">
+        DELETE FROM ants_management_announcement
+              WHERE annId = #{annId}
+    </delete>
+
+    <!--修改公告信息-->
+    <update id="updateAnnouncement" parameterType="Map">
+        UPDATE ants_management_announcement
+            SET annTitle = #{annTitle},annContent=#{annContent},annTime=#{annTime}
+                WHERE annId = #{annId}
+
+    </update>
+
+    <!--将公告状态进行更改，即进入回收站-->
+    <update id="updateAnnouncementState" parameterType="Map">
+        UPDATE ants_management_announcement
+              SET state = #{state}
+                  WHERE annId = #{annId}
+    </update>
+
+</mapper>
