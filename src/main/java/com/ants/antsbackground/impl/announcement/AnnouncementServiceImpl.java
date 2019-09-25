@@ -68,11 +68,53 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     }
 
     /**
-     * 获取公告的数量
+     * 增加新公告
+     * @param parameterMap
      * @return
      */
-    public Integer countAnnouncementNumber(){
-        return announcementMapper.countAnnouncementNumber();
+    public List<AnnouncementDTO> listAnnouncementRecycle(Map<String,Integer> parameterMap){
+        //返回从数据库中获取的用户反馈的信息列表
+        List<Announcement> announcementList = announcementMapper.listAnnouncementRecycle(parameterMap);
+        //声明一个保存新的返回数据的格式的DTO列表
+        List<AnnouncementDTO> announcementDTOLinkedList = new LinkedList<>();
+
+        //获取用户反馈信息列表的长度
+        int length = announcementList.size();
+
+        //声明反馈对象
+        Announcement announcement = null;
+        AnnouncementDTO announcementDTO = null;
+
+        //遍历用户反馈信息列表，将列表中的数据对象进行DTO数据对象封装
+        for (int index = 0; index < length; index++) {
+            //获取单个反馈信息
+            announcement = announcementList.get(index);
+
+            //获取要返回给前端的数据格式的参数和数据
+            int annId = announcement.getAnnId();
+            String annTitle = announcement.getAnnTitle();
+            String annTime = announcement.getAnnTime();
+
+            announcementDTO = new AnnouncementDTO();
+            //DTO赋值
+            announcementDTO.setAnnId(annId);
+            announcementDTO.setAnnTitle(annTitle);
+            announcementDTO.setAnnReleaseTime(annTime);
+
+            //将新的传输对象DTO添加到返回值列表里
+            announcementDTOLinkedList.add(announcementDTO);
+
+        }
+        return announcementDTOLinkedList;
+    }
+
+    /**
+     * 获取公告的数量
+     * @param state
+     * @return
+     */
+    public Integer countAnnouncementNumber(Integer state){
+        return announcementMapper.countAnnouncementNumber(state);
     }
 
     /**
@@ -111,5 +153,6 @@ public class AnnouncementServiceImpl implements AnnouncementService {
     public Integer deleteAnnouncement(Integer annId){
         return announcementMapper.deleteAnnouncement(annId);
     }
+
 
 }

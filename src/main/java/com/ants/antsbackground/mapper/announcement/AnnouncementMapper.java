@@ -25,10 +25,10 @@ public interface AnnouncementMapper {
 
     /**
      * 获取公告的数量
-     *
+     * @param state
      * @return
      */
-    Integer countAnnouncementNumber();
+    Integer countAnnouncementNumber(Integer state);
 
     /**
      * 增加一条新公告
@@ -61,4 +61,11 @@ public interface AnnouncementMapper {
      * @return
      */
     Integer deleteAnnouncement(Integer annId);
+
+    /**
+     * 增加新公告
+     * @param parameterMap
+     * @return
+     */
+    List<Announcement> listAnnouncementRecycle(Map<String,Integer> parameterMap);
 }

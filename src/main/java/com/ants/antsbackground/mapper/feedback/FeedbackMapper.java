@@ -26,10 +26,17 @@ public interface FeedbackMapper {
     List<Feedback> listFeedback(Map<String, Integer> parameterMap);
 
     /**
+     * 获取回收站里的公告信息
+     * @param parameterMap
+     * @return
+     */
+    List<Feedback> listFeedbackRecycle(Map<String,Integer> parameterMap);
+
+    /**
      * 获取用户反馈信息的数量
      * @return
      */
-    Integer countFeedbackNumber();
+    Integer countFeedbackNumber(Integer state);
 
     /**
      * 彻底删除用户反馈信息

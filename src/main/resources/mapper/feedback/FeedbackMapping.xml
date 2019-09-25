@@ -9,9 +9,18 @@
                   LiMIT #{head},#{length}
     </select>
 
+    <!--获取回收站里的公告信息-->
+    <select id="listFeedbackRecycle" parameterType="Map" resultType="com.ants.antsbackground.entity.feedback.Feedback">
+        SELECT fbId,fbSerial,fbSatisfaction,fbTime
+              FROM ants_management_feedback
+                  WHERE state = #{state}
+                      LIMIT #{head},#{length}
+    </select>
+
     <!--获取用户反馈信息的数量-->
-    <select id="countFeedbackNumber" resultType="Integer">
+    <select id="countFeedbackNumber" parameterType="Integer" resultType="Integer">
         SELECT COUNT(*) FROM ants_management_feedback
+              WHERE state = #{state}
     </select>
 
     <!--彻底删除用户反馈信息-->

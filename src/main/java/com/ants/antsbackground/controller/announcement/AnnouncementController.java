@@ -36,7 +36,7 @@ public class AnnouncementController {
     private AnnouncementService announcementService;
 
     /**
-     * 列出用户反馈信息的列表
+     * 列出公告信息的列表
      *
      * @param currentPage
      * @return
@@ -48,8 +48,9 @@ public class AnnouncementController {
         //用来保存listAnnouncement方法中的head和length参数
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
-        //获取用户反馈信息的数量
-        int countAnnouncementNumber = announcementService.countAnnouncementNumber();
+        //获取用户反馈信息的数量,state为0，表示公告为正常状态，未被回收进回收站
+        int state = 0;
+        int countAnnouncementNumber = announcementService.countAnnouncementNumber(state);
 
         //计算反馈列表的总页数
         int allPage = (countAnnouncementNumber / PageConsts.Announcement_PAGE_NUMBER) + 1;
@@ -66,14 +67,62 @@ public class AnnouncementController {
         }
 
         //获取页面数开始的数据信息在数据库的坐标信息
-        int head = (currentPage - 1) * PageConsts.FEEDBACK_PAGE_NUMBER;
+        int head = (currentPage - 1) * PageConsts.Announcement_PAGE_NUMBER;
 
         //传入初始页面的列表返回值
         parameterMap.put("head", head);
-        parameterMap.put("length", PageConsts.FEEDBACK_PAGE_NUMBER);
+        parameterMap.put("length", PageConsts.Announcement_PAGE_NUMBER);
 
         //获取符合条件的返回列表的数据
         List<AnnouncementDTO> announcementList = announcementService.listAnnouncement(parameterMap);
+        resultMap.put("announcementList", announcementList);
+
+
+        return resultMap;
+    }
+
+    /**
+     * 列出公告回收站信息的列表
+     *
+     * @param currentPage
+     * @return
+     */
+    @RequestMapping(value = "/listAnnouncementRecycle", method = RequestMethod.GET)
+    public Map listAnnouncementRecycle(@RequestParam(value = "currentPage") int currentPage) {
+        //返回给前端数据的map
+        Map resultMap = new HashMap(16);
+        //用来保存listAnnouncementRecycle方法中的head和length参数
+        Map<String, Integer> parameterMap = new HashMap<>(16);
+
+        //获取用户反馈信息的数量,state为1,表示公告进入回收站，获取回收站的公告信息
+        int state = 1;
+        int countAnnouncementNumber = announcementService.countAnnouncementNumber(state);
+
+        if (currentPage <= 0) {
+            resultMap.put("msg", "页面数传输有误!");
+            return resultMap;
+        }
+        //计算反馈列表的总页数
+        int allPage = (countAnnouncementNumber / PageConsts.Announcement_PAGE_NUMBER) + 1;
+        if (allPage <= 0) {
+            resultMap.put("msg", "页面数传输有误!");
+            return resultMap;
+        }
+
+        resultMap.put("allPage", allPage);
+
+
+
+        //获取页面数开始的数据信息在数据库的坐标信息
+        int head = (currentPage - 1) * PageConsts.Announcement_PAGE_NUMBER;
+
+        //传入初始页面的列表返回值
+        parameterMap.put("state",1);
+        parameterMap.put("head", head);
+        parameterMap.put("length", PageConsts.Announcement_PAGE_NUMBER);
+
+        //获取符合条件的返回列表的数据
+        List<AnnouncementDTO> announcementList = announcementService.listAnnouncementRecycle(parameterMap);
         resultMap.put("announcementList", announcementList);
 
 
@@ -219,7 +268,7 @@ public class AnnouncementController {
      * @param annContent
      * @return
      */
-    @RequestMapping(value = "/insertAnnouncement",method = RequestMethod.POST)
+    @RequestMapping(value = "/insertAnnouncement", method = RequestMethod.POST)
     public Map insertAnnouncement(@RequestParam(value = "annTitle") String annTitle,
                                   @RequestParam(value = "annContent") String annContent) {
         //用来保存返回给前端数据的map
@@ -228,13 +277,13 @@ public class AnnouncementController {
         //存放参数信息
         Announcement announcement = new Announcement();
 
-        if (annTitle == null || "".equals(annTitle)){
+        if (annTitle == null || "".equals(annTitle)) {
             resultMap.put("msg", "标题不可以为空！");
             return resultMap;
         }
         announcement.setAnnTitle(annTitle);
 
-        if (annContent == null || "".equals(annContent)){
+        if (annContent == null || "".equals(annContent)) {
             resultMap.put("msg", "内容不可以为空！");
             return resultMap;
         }
@@ -250,7 +299,7 @@ public class AnnouncementController {
 
         int result = announcementService.insertAnnouncement(announcement);
         //判断是否添加一条新的公告成功
-        if (result <=0) {
+        if (result <= 0) {
             resultMap.put("msg", "添加新的公告失败!");
             return resultMap;
         }
@@ -258,6 +307,8 @@ public class AnnouncementController {
         return resultMap;
 
     }
+
+
 
 
 }

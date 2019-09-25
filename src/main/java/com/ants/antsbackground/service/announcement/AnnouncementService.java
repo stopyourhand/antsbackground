@@ -18,17 +18,19 @@ import java.util.Map;
 public interface AnnouncementService {
     /**
      * 获取公告列表信息
+     *
      * @param parameterMap
      * @return
      */
-    List<AnnouncementDTO> listAnnouncement(Map<String,Integer> parameterMap);
+    List<AnnouncementDTO> listAnnouncement(Map<String, Integer> parameterMap);
 
 
     /**
      * 获取公告的数量
+     * @param state
      * @return
      */
-    Integer countAnnouncementNumber();
+    Integer countAnnouncementNumber(Integer state);
 
     /**
      * 增加一条新公告
@@ -40,6 +42,7 @@ public interface AnnouncementService {
 
     /**
      * 修改公告信息
+     *
      * @param parameterMap
      * @return
      */
@@ -47,16 +50,26 @@ public interface AnnouncementService {
 
     /**
      * 将反馈信息状态进行更改，即进入回收站
+     *
      * @param map
      * @return
      */
-    Integer updateAnnouncementState(Map<String,Integer> map);
+    Integer updateAnnouncementState(Map<String, Integer> map);
 
     /**
      * 彻底公告反馈信息
+     *
      * @param annId
      * @return
      */
     Integer deleteAnnouncement(Integer annId);
+
+    /**
+     * 增加新公告
+     *
+     * @param parameter
+     * @return
+     */
+    List<AnnouncementDTO> listAnnouncementRecycle(Map<String, Integer> parameter);
 
 }

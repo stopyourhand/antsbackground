@@ -10,8 +10,19 @@
     </select>
 
     <!--获取公告的数量-->
-    <select id="countAnnouncementNumber" resultType="Integer">
-        SELECT COUNT(*) FROM ants_management_announcement
+    <select id="countAnnouncementNumber" parameterType="Integer" resultType="Integer">
+        SELECT COUNT(*)
+            FROM ants_management_announcement
+                WHERE state = #{state}
+
+    </select>
+
+    <!--获取回收站里的公告信息-->
+    <select id="listAnnouncementRecycle" parameterType="Map" resultType="com.ants.antsbackground.entity.announcement.Announcement">
+        SELECT annId,annTitle,annTime
+              FROM ants_management_announcement
+                  WHERE state = #{state}
+                      LIMIT #{head},#{length}
     </select>
 
     <!--增加新公告-->
