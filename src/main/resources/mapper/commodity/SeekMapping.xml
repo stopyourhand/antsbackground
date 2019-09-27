@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.antsbackground.mapper.commodity.SeekMapper">
+    <!--获取在指定时间内(七天)发布寻求的数量-->
+    <select id="countReleaseGiveNumber" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_goods_seek`
+              WHERE  uploadTime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.antsbackground.mapper.people.AdministratorMapper">
+    <!--设置数据库ants_management_administrator表中字段与entity类的一个映射-->
+    <resultMap id="administratorMap" type="com.ants.antsbackground.entity.people.Administrator">
+        <id column="admin_id" property="adminId"/>
+        <result column="admin_name" property="adminName"/>
+        <result column="admin_password" property="adminPassword"/>
+        <result column="admin_picture" property="adminPicture"/>
+        <result column="last_login_time" property="lastLoginTime"/>
+        <result column="last_login_Ip" property="lastLoginIp"/>
+    </resultMap>
+
+    <!--获取管理员账号对应的密码，进行登录判断-->
+    <select id="getAdministratorPassword" parameterType="Integer" resultType="String">
+        SELECT admin_password FROM ants_management_administrator
+              WHERE admin_id = #{adminId}
+    </select>
+
+    <!--获取管理员原来的密码-->
+    <select id="getOldPassword" parameterType="Integer" resultType="String">
+        SELECT admin_password FROM ants_management_administrator
+              WHERE admin_id = #{adminId}
+    </select>
+
+    <!--修改密码-->
+    <update id="updateAdminPassword" parameterType="Map">
+        UPDATE  ants_management_administrator
+            SET admin_password = #{adminPassword}
+                WHERE admin_id = #{adminId}
+    </update>
+
+</mapper>
