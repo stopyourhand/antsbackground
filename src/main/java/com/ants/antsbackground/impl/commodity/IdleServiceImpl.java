@@ -1,5 +1,6 @@
 package com.ants.antsbackground.impl.commodity;
 
+import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.mapper.commodity.IdleMapper;
 import com.ants.antsbackground.mapper.sell.SellMapper;
 import com.ants.antsbackground.service.commodity.IdleService;
@@ -7,6 +8,7 @@ import com.ants.antsbackground.service.sell.SellService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,5 +28,22 @@ public class IdleServiceImpl implements IdleService {
      */
     public Integer countReleaseIdleNumber(Map<String,String> parameterMap){
         return idleMapper.countReleaseIdleNumber(parameterMap);
+    }
+
+    /**
+     * 获取在已经通过审核的闲置的商品名称,价格,发布类型以及所属卖家信息的列表
+     * @param parameterMap
+     * @return
+     */
+    public List<AuditDTO> listAuditedIdleGoods(Map<String,Integer> parameterMap){
+        return idleMapper.listAuditedIdleGoods(parameterMap);
+    }
+
+    /**
+     * 统计审核通过的闲置的商品的数量
+     * @return
+     */
+    public Integer countAuditedIdleGoods(){
+        return idleMapper.countAuditedIdleGoods();
     }
 }

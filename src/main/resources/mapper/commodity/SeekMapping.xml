@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ants.antsbackground.mapper.commodity.SeekMapper">
+
+
+    <!--获取在已经通过审核的寻求的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listAuditedSeekGoods" parameterType="Map" resultType="com.ants.antsbackground.dto.AuditDTO">
+        SELECT goodsId,goodsName,goodsPrice,userName
+              FROM ants_user_base as us ,ants_goods_seek as seek
+                  WHERE us.studentId = seek.goodsBelong
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--统计审核通过的寻求的商品的数量-->
+    <select id="countAuditedSeekGoods" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_seek
+    </select>
+
     <!--获取在指定时间内(七天)发布寻求的数量-->
-    <select id="countReleaseGiveNumber" parameterType="Map" resultType="Integer">
+    <select id="countReleaseSeekNumber" parameterType="Map" resultType="Integer">
         SELECT COUNT(*) FROM `ants_goods_seek`
               WHERE  uploadTime BETWEEN #{startTime} AND #{endTime}
     </select>

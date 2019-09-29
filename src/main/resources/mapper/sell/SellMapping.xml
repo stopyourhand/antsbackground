@@ -8,4 +8,9 @@
                     AND sellTime BETWEEN #{startTime} AND #{endTime}
     </select>
 
+    <!--获取所有交易完成的商品的数量-->
+    <select id="countAllSellGoodsNumber" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_other_sell`
+    </select>
+
 </mapper>

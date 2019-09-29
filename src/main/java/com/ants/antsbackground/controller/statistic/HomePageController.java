@@ -1,7 +1,9 @@
 package com.ants.antsbackground.controller.statistic;
 
+import com.ants.antsbackground.constant.ClassifyContst;
 import com.ants.antsbackground.constant.PersonalContst;
 import com.ants.antsbackground.dto.PersonalDataDTO;
+import com.ants.antsbackground.service.classify.ClassificationService;
 import com.ants.antsbackground.service.commodity.GiveService;
 import com.ants.antsbackground.service.commodity.IdleService;
 import com.ants.antsbackground.service.commodity.LeaseService;
@@ -52,6 +54,9 @@ public class HomePageController {
 
     @Autowired
     private SeekService seekService;
+
+    @Autowired
+    private ClassificationService classificationService;
 
 
     /**
@@ -118,7 +123,7 @@ public class HomePageController {
         resultMap.put("releaseIdleNumber", releaseIdleNumber);
 
         //计算最近七天的寻求数量
-        int releaseSeekNumber = seekService.countReleaseGiveNumber(parameterMap);
+        int releaseSeekNumber = seekService.countReleaseSeekNumber(parameterMap);
         if (releaseSeekNumber < 0) {
             resultMap.put("msg", "网站获取数据错误，请重新请求!");
             return resultMap;
@@ -133,7 +138,7 @@ public class HomePageController {
         }
         resultMap.put("releaseLeaseNumber", releaseLeaseNumber);
 
-        int releaseGiveNumber = giveService.countReleaseGiveNumber(parameterMap);
+        int releaseGiveNumber = seekService.countReleaseSeekNumber(parameterMap);
         //计算最近七天的赠送数量
         if (releaseGiveNumber < 0) {
             resultMap.put("msg", "网站获取数据错误，请重新请求!");
@@ -223,8 +228,87 @@ public class HomePageController {
         //获取本次登录IP
         personalDataDTO.setLoginIp(hostAddress);
 
-
         resultMap.put("personalData", personalDataDTO);
+
+        /**
+         * 下面的是对大分类的交易统计数量的一个业务操作
+         */
+
+        //统计书籍大分类的交易数量
+        parameterMap.put("start", ClassifyContst.BOOKS_HEAD);
+        parameterMap.put("end", ClassifyContst.BOOKS_TAIL);
+        int booksNumber = classificationService.countClassificationNumber(parameterMap);
+        if (booksNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        resultMap.put("booksNumber",booksNumber);
+
+        //统计文具大分类的交易数量
+        parameterMap.put("start", ClassifyContst.STATIONERY_HEAD);
+        parameterMap.put("end", ClassifyContst.STATIONERY_TAIL);
+        int stationeryNumber = classificationService.countClassificationNumber(parameterMap);
+        if (stationeryNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        resultMap.put("stationeryNumber",stationeryNumber);
+
+        //统计日用大分类的交易数量
+        parameterMap.put("start", ClassifyContst.DAILY_HEAD);
+        parameterMap.put("end", ClassifyContst.DAILY_TAIL);
+        int dailyNumber = classificationService.countClassificationNumber(parameterMap);
+        if (dailyNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        resultMap.put("dailyNumber",dailyNumber);
+
+        //统计美妆大分类的交易数量
+        parameterMap.put("start", ClassifyContst.COSMETICS_HEAD);
+        parameterMap.put("end", ClassifyContst.COSMETICS_TAIL);
+        int cosmeticsNumber = classificationService.countClassificationNumber(parameterMap);
+        if (cosmeticsNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        resultMap.put("cosmeticsNumber",cosmeticsNumber);
+
+        //统计食品大分类的交易数量
+        parameterMap.put("start", ClassifyContst.FOOD_HEAD);
+        parameterMap.put("end", ClassifyContst.FOOD_TAIL);
+        int foodNumber = classificationService.countClassificationNumber(parameterMap);
+        if (foodNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        resultMap.put("foodNumber",foodNumber);
+
+        //统计电器大分类的交易数量
+        parameterMap.put("start", ClassifyContst.ELECTRICAL_HEAD);
+        parameterMap.put("end", ClassifyContst.ELECTRICAL_TAIL);
+        int electricalNumber = classificationService.countClassificationNumber(parameterMap);
+        if (electricalNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        resultMap.put("electricalNumber",electricalNumber);
+
+        //获取所有交易完成的商品的数量
+        int allSellGoodsNumber = sellService.countAllSellGoodsNumber();
+        if (allSellGoodsNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+
+        //计算"其他"大分类的交易统计数量
+        int othersNumber = allSellGoodsNumber - booksNumber - stationeryNumber - dailyNumber - cosmeticsNumber - foodNumber - electricalNumber;
+        if (othersNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        resultMap.put("othersNumber",othersNumber);
+
         return resultMap;
     }
 
@@ -321,6 +405,7 @@ public class HomePageController {
         }
         String usedMemory = String.valueOf(usedMemoryL);
         resultMap.put("usedMemory", usedMemory + "M");
+
 
         return resultMap;
     }

@@ -2,6 +2,7 @@ package com.ants.antsbackground.controller.people;
 
 
 import com.ants.antsbackground.service.people.AdministratorService;
+import com.ants.antsbackground.util.InterfaceAnalysisUtil;
 import org.apache.catalina.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,10 @@ public class AdministratorController {
      * @param passWord
      * @return
      */
-    @GetMapping(value = "/loginToJudge")
+    @PostMapping(value = "/loginToJudge")
     public Map loginToJudge(@RequestParam(value = "account") int account,
                             @RequestParam(value = "passWord") String passWord) {
+
         //保存返回给前端信息的hashMap
         Map resultMap = new HashMap<>(16);
 
@@ -68,12 +70,19 @@ public class AdministratorController {
             resultMap.put("msg", "登录成功!");
             return resultMap;
         } else {
-            resultMap.put("judge", false);
-            resultMap.put("msg", "密码不正确，请重新输入!");
+            //使用学校结口的工具类
+            InterfaceAnalysisUtil interfaceAnalysisUtil = new InterfaceAnalysisUtil();
+            //调用学校接口进行登录
+            String accounts = String.valueOf(account);
+            resultMap = interfaceAnalysisUtil.analysis(accounts,passWord);
+
             return resultMap;
         }
 
+
+
     }
+
 
     /**
      * 修改管理员密码

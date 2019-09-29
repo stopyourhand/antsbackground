@@ -20,5 +20,11 @@ public interface SellService {
      */
     Integer countSellNumberByCommodity(Map parameterMap);
 
+    /**
+     * 获取所有交易完成的商品的数量
+     * @return
+     */
+    Integer countAllSellGoodsNumber();
+
 
 }

@@ -11,4 +11,6 @@ public class PageConsts {
     public final static Integer FEEDBACK_PAGE_NUMBER = 8;
     /** 公告列表一个页面有8条数据 */
     public final static Integer Announcement_PAGE_NUMBER = 8;
+    /** 发布管理列表一个页面有8条数据 */
+    public final static Integer AUDIT_PAGE_NUMBER = 8;
 }

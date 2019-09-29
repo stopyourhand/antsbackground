@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.antsbackground.mapper.commodity.AuditMapper">
+
+    <!--获取在审核表的所有商品(待审核,回收站)的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listAuditCommodity" parameterType="Map" resultType="com.ants.antsbackground.dto.AuditDTO">
+        SELECT goodsId,goodsName,goodsPrice,goodsType,userName
+              FROM ants_user_base as us ,ants_goods_audit as audit
+                  WHERE us.studentId = audit.goodsBelong AND goodsType = #{goodsType}
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--获取在审核表的待审核或者回收站商品的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listCommodityByAudit" parameterType="Map" resultType="com.ants.antsbackground.dto.AuditDTO">
+        SELECT goodsId,goodsName,goodsPrice,goodsType,userName
+              FROM ants_user_base as us ,ants_goods_audit as audit
+                  WHERE us.studentId = audit.goodsBelong
+                      AND goodsType = #{goodsType} AND goodsState = #{goodsState}
+                        LIMIT #{head},#{length}
+    </select>
+
+    <!--统计不同类型(闲置,赠送,寻求,租赁)正在审核以及在回收站的商品的数量-->
+    <select id="countAuditByGoodsType" parameterType="Integer" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_audit
+              WHERE goodsType = #{goodsType}
+    </select>
+
+    <!--统计不同类型(闲置,赠送,寻求,租赁)正在审核或者在回收站的商品的数量-->
+    <select id="countAuditByRecycle" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_audit
+              WHERE goodsType = #{goodsType} AND goodsState = #{goodsState}
+    </select>
+
+</mapper>

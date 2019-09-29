@@ -29,4 +29,12 @@ public class SellServiceImpl implements SellService {
         return sellMapper.countSellNumberByCommodity(parameterMap);
     }
 
+    /**
+     * 获取所有交易完成的商品的数量
+     * @return
+     */
+    public Integer countAllSellGoodsNumber(){
+        return sellMapper.countAllSellGoodsNumber();
+    }
+
 }

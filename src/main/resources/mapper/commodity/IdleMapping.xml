@@ -7,4 +7,17 @@
               WHERE  uploadTime BETWEEN #{startTime} AND #{endTime}
     </select>
 
+    <!--获取在已经通过审核的闲置的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listAuditedIdleGoods" parameterType="Map" resultType="com.ants.antsbackground.dto.AuditDTO">
+        SELECT goodsId,goodsName,goodsPrice,userName
+              FROM ants_user_base as us ,ants_goods_base as base
+                  WHERE us.studentId = base.goodsBelong
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--统计审核通过的闲置的商品的数量-->
+    <select id="countAuditedIdleGoods" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_base
+    </select>
+
 </mapper>

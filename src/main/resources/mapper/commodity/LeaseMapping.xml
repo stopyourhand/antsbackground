@@ -7,4 +7,17 @@
               WHERE  uploadTime BETWEEN #{startTime} AND #{endTime}
     </select>
 
+    <!--获取在已经通过审核的租赁的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listAuditedLeaseGoods" parameterType="Map" resultType="com.ants.antsbackground.dto.AuditDTO">
+        SELECT goodsId,goodsName,goodsPrice,userName
+              FROM ants_user_base as us ,ants_goods_lease as lease
+                  WHERE us.studentId = lease.goodsBelong
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--统计审核通过的租赁的商品的数量-->
+    <select id="countAuditedLeaseGoods" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_lease
+    </select>
+
 </mapper>
