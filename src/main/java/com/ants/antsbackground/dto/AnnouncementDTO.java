@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 public class AnnouncementDTO {
     /** 公告表编号 */
-    private Integer annId;
+    private Integer id;
     /** 公告的标题  */
-    private String annTitle;
+    private String title;
     /** 公告的内容 */
-    private String annContent;
+    private String content;
     /** 公告发布的时间 */
-    private String annReleaseTime;
+    private String time;
 }

@@ -1,5 +1,6 @@
 package com.ants.antsbackground.impl.people;
 
+import com.ants.antsbackground.dto.UserDTO;
 import com.ants.antsbackground.mapper.people.AdministratorMapper;
 import com.ants.antsbackground.mapper.people.UserMapper;
 import com.ants.antsbackground.service.people.AdministratorService;
@@ -7,6 +8,7 @@ import com.ants.antsbackground.service.people.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,20 +25,41 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 获取网站现在的用户总数量，总人数
+     *
      * @return
      */
-    public Integer countUserNumber(){
+    public Integer countUserNumber() {
         return userMapper.countUserNumber();
     }
 
 
     /**
      * 获取在指定时间内注册的用户人数(七天内注册)
+     *
      * @param parameterMap
      * @return
      */
-    public Integer countUserRegister(Map<String,String> parameterMap){
+    public Integer countUserRegister(Map<String, String> parameterMap) {
         return userMapper.countUserRegister(parameterMap);
+    }
+
+    /**
+     * 获取所有用户信息或者回收站的用户信息的列表
+     *
+     * @param parameterMap
+     * @return
+     */
+    public List<UserDTO> listUsers(Map<String, Integer> parameterMap) {
+        return userMapper.listUsers(parameterMap);
+    }
+
+    /**
+     * 获取网站现在的用户（包括回收站）总数量，总人数
+     * @param parameterMap
+     * @return
+     */
+    public Integer countUser(Map<String,Integer> parameterMap){
+        return userMapper.countUser(parameterMap);
     }
 
 }

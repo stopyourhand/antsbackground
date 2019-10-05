@@ -1,22 +1,17 @@
 package com.ants.antsbackground.util;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.ws.rs.core.Response;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 用来解析学校登录接口并且返回JSON格式
@@ -26,12 +21,6 @@ import org.slf4j.LoggerFactory;
  * @Version: V1.0
  */
 public class InterfaceAnalysisUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(InterfaceAnalysisUtil.class);
-
-    public static void main(String[] args) {
-        InterfaceAnalysisUtil interfaceAnalysisUtil = new InterfaceAnalysisUtil();
-        interfaceAnalysisUtil.analysis("171543117","czd7693940");
-    }
 
     public  Map analysis(String xh,String pwd){
         Map resultMap = null;
@@ -69,7 +58,6 @@ public class InterfaceAnalysisUtil {
 
             //根据返回的状态码，转换对应的状态枚举
             Response.Status status = Response.Status.fromStatusCode(statusCode);
-            System.out.println("88888888"+status.toString());
             if(status == Response.Status.OK) {
                 System.out.println("后台处理完毕！");
                 return statusCode;
@@ -94,7 +82,7 @@ public class InterfaceAnalysisUtil {
      */
     private  Map getResultMessage(String str){
         Map resultMap = new HashMap<>();
-        //{"flag":"1","userrealname":"陈兆东","token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1Njk4NTAyMDgsImF1ZCI6IjE3MTU0MzExNyJ9.mM2Ie-eLomPLyxeFi23ulMo4gWnocZHeC0_B0_wlBDc","userdwmc":"互联网金融与信息工程学院","usertype":"2","msg":"登录成功"}
+        //{"flag":"1","userrealname":"name","token":"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1Njk4NTAyMDgsImF1ZCI6IjE3MTU0MzExNyJ9.mM2Ie-eLomPLyxeFi23ulMo4gWnocZHeC0_B0_wlBDc","userdwmc":"互联网金融与信息工程学院","usertype":"2","msg":"登录成功"}
         if (str == null || "".equals(str)){
             return resultMap;
         }
@@ -128,9 +116,7 @@ public class InterfaceAnalysisUtil {
         while (!"\"".equals(strArray[i])){
             i++;
         }
-
         i++;
-
         for(int k = i; k < length; k++){
             if ("\"".equals(strArray[k])){
                 break;

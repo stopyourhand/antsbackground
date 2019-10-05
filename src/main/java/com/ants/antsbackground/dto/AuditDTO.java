@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 @Data
 public class AuditDTO {
     /** 商品主键 */
-    private Integer goodsId;
+    private Integer id;
     /** 商品名称 */
-    private String goodsName;
+    private String name;
     /** 商品价格 */
-    private Double goodsPrice;
+    private Double price;
     /** 商品审核类型 0:闲置 1:赠送 2:租赁 3:寻求 */
     private Integer goodsType;
     /** 商品所属的卖家名称 */

@@ -3,6 +3,7 @@ package com.ants.antsbackground.controller.feedback;
 
 import com.ants.antsbackground.constant.PageConsts;
 import com.ants.antsbackground.dto.AnnouncementDTO;
+import com.ants.antsbackground.dto.DecorationDTO;
 import com.ants.antsbackground.dto.FeedbackDTO;
 import com.ants.antsbackground.entity.feedback.Feedback;
 import com.ants.antsbackground.service.feedback.FeedbackService;
@@ -33,7 +34,7 @@ public class FeedbakcController {
      * @param currentPage
      * @return
      */
-    @RequestMapping(value = "/listFeedback", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     public Map listFeedback(@RequestParam(value = "currentPage") int currentPage) {
         //返回给前端数据的map
         Map resultMap = new HashMap(16);
@@ -53,7 +54,7 @@ public class FeedbakcController {
         parameterMap.put("length", PageConsts.FEEDBACK_PAGE_NUMBER);
 
         //获取符合条件的返回列表的数据
-        List<FeedbackDTO> feedbackList = feedbackService.listFeedback(parameterMap);
+        List<DecorationDTO> feedbackList = feedbackService.listFeedback(parameterMap);
         resultMap.put("feedbackList", feedbackList);
 
         //获取用户反馈信息的数量,设置state为0代表还没有被回收进回收站的反馈信息
@@ -78,7 +79,7 @@ public class FeedbakcController {
      * @param currentPage
      * @return
      */
-    @RequestMapping(value = "/listFeedbackRecycle", method = RequestMethod.GET)
+    @RequestMapping(value = "/listRecycle", method = RequestMethod.GET)
     public Map listFeedbackRecycle(@RequestParam(value = "currentPage") int currentPage) {
         //返回给前端数据的map
         Map resultMap = new HashMap(16);
@@ -133,7 +134,7 @@ public class FeedbakcController {
      * @param idList
      * @return
      */
-    @RequestMapping(value = "/deleteFeedback", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Map deleteFeedback(@RequestParam(value = "type") Integer type,
                               @RequestParam(value = "idList[]") int[] idList) {
         //存放返回给前端数据的一个map

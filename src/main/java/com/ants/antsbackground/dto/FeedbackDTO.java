@@ -11,11 +11,11 @@ import lombok.Data;
 @Data
 public class FeedbackDTO {
     /** 主键 */
-    private Integer fbId;
+    private Integer id;
     /** 反馈编号 */
-    private String fbSerial;
+    private String serial;
     /** 用户满意度 */
-    private Integer fbSatisfaction;
+    private Integer satisfaction;
     /** 用户反馈时间 */
-    private String fbTime;
+    private String time;
 }

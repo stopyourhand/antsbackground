@@ -68,4 +68,6 @@ public interface AnnouncementMapper {
      * @return
      */
     List<Announcement> listAnnouncementRecycle(Map<String,Integer> parameterMap);
+
+
 }

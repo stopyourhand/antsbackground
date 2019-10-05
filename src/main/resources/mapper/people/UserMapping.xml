@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ants.antsbackground.mapper.people.UserMapper">
+    <resultMap id="userMap" type="com.ants.antsbackground.dto.UserDTO">
+        <id column="studentId" property="id"/>
+        <result column="userName" property="userName"/>
+        <result column="mobilePhone" property="phone"/>
+        <result column="userQQ" property="QQ"/>
+        <result column="userWechat" property="weChat"/>
+        <result column="address" property="address"/>
+    </resultMap>
 
     <!--获取网站现在的用户总数量，总人数-->
     <select id="countUserNumber"  resultType="Integer">
@@ -11,6 +19,25 @@
     <select id="countUserRegister" parameterType="Map" resultType="Integer">
         SELECT COUNT(*) FROM `ants_user_base`
               WHERE  registTime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!--获取所有用户信息或者回收站的用户信息的列表-->
+    <select id="listUsers" parameterType="Map" resultMap="userMap">
+        SELECT studentId,userName,mobilePhone,userWechat,userQQ,address
+              FROM ants_user_base
+--               judge 为0代表列出所有用户信息，为1代表回收站信息
+              <if test="judge == 1">
+                  WHERE userType = #{userType}
+              </if>
+    </select>
+
+    <!--获取网站现在的用户（包括回收站）总数量，总人数-->
+    <select id="countUser" parameterType="Map"  resultType="Integer">
+        SELECT COUNT(*) FROM ants_user_base
+--      judge 为0代表列出所有用户信息，为1代表回收站信息
+        <if test="judge == 1">
+            WHERE userType = #{userType}
+        </if>
     </select>
 
 </mapper>

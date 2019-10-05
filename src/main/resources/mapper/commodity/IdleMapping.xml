@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ants.antsbackground.mapper.commodity.IdleMapper">
+    <resultMap id="commodityMap" type="com.ants.antsbackground.dto.CommodityDTO">
+        <id column="goodsId" property="id"/>
+        <result column="goodsName" property="name"/>
+        <result column="goodsPrice" property="price"/>
+        <result column="goodsType" property="goodsType"/>
+        <result column="userName" property="userName"/>
+    </resultMap>
+
+    <resultMap id="auditMap" type="com.ants.antsbackground.dto.AuditDTO">
+        <id column="goodsId" property="id"/>
+        <result column="goodsName" property="name"/>
+        <result column="goodsPrice" property="price"/>
+        <result column="userName" property="userName"/>
+    </resultMap>
+
     <!--获取在指定时间内(七天)发布闲置的数量-->
     <select id="countReleaseIdleNumber" parameterType="Map" resultType="Integer">
         SELECT COUNT(*) FROM `ants_goods_base`
@@ -8,7 +23,7 @@
     </select>
 
     <!--获取在已经通过审核的闲置的商品名称,价格,发布类型以及所属卖家信息的列表-->
-    <select id="listAuditedIdleGoods" parameterType="Map" resultType="com.ants.antsbackground.dto.AuditDTO">
+    <select id="listAuditedIdleGoods" parameterType="Map" resultMap="auditMap">
         SELECT goodsId,goodsName,goodsPrice,userName
               FROM ants_user_base as us ,ants_goods_base as base
                   WHERE us.studentId = base.goodsBelong
@@ -18,6 +33,20 @@
     <!--统计审核通过的闲置的商品的数量-->
     <select id="countAuditedIdleGoods" resultType="Integer">
         SELECT COUNT(*) FROM ants_goods_base
+    </select>
+
+    <!--获取在闲置表的所有商品(审核通过,回收站)的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listIdleCommodity" parameterType="Map" resultMap="commodityMap">
+        SELECT goodsId,goodsName,goodsPrice,goodsType,userName
+              FROM ants_user_base as us ,ants_goods_base as idle
+                  WHERE us.studentId = idle.goodsBelong AND goodsType = #{goodsType}
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--统计闲置的商品中通过审核或者正在回收站的商品的数量-->
+    <select id="countIdleCommodity" parameterType="Integer" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_base
+            WHERE goodsType = #{goodsType}
     </select>
 
 </mapper>

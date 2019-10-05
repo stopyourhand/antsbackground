@@ -3,6 +3,7 @@ package com.ants.antsbackground.controller.announcement;
 
 import com.ants.antsbackground.constant.PageConsts;
 import com.ants.antsbackground.dto.AnnouncementDTO;
+import com.ants.antsbackground.dto.DecorationDTO;
 import com.ants.antsbackground.dto.FeedbackDTO;
 import com.ants.antsbackground.entity.announcement.Announcement;
 import com.ants.antsbackground.service.announcement.AnnouncementService;
@@ -41,7 +42,7 @@ public class AnnouncementController {
      * @param currentPage
      * @return
      */
-    @RequestMapping(value = "/listAnnouncement", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     public Map listAnnouncement(@RequestParam(value = "currentPage") int currentPage) {
         //返回给前端数据的map
         Map resultMap = new HashMap(16);
@@ -74,7 +75,7 @@ public class AnnouncementController {
         parameterMap.put("length", PageConsts.Announcement_PAGE_NUMBER);
 
         //获取符合条件的返回列表的数据
-        List<AnnouncementDTO> announcementList = announcementService.listAnnouncement(parameterMap);
+        List<DecorationDTO> announcementList = announcementService.listAnnouncement(parameterMap);
         resultMap.put("announcementList", announcementList);
 
 
@@ -87,7 +88,7 @@ public class AnnouncementController {
      * @param currentPage
      * @return
      */
-    @RequestMapping(value = "/listAnnouncementRecycle", method = RequestMethod.GET)
+    @RequestMapping(value = "/listRecycle", method = RequestMethod.GET)
     public Map listAnnouncementRecycle(@RequestParam(value = "currentPage") int currentPage) {
         //返回给前端数据的map
         Map resultMap = new HashMap(16);
@@ -112,17 +113,16 @@ public class AnnouncementController {
         resultMap.put("allPage", allPage);
 
 
-
         //获取页面数开始的数据信息在数据库的坐标信息
         int head = (currentPage - 1) * PageConsts.Announcement_PAGE_NUMBER;
 
         //传入初始页面的列表返回值
-        parameterMap.put("state",1);
+        parameterMap.put("state", 1);
         parameterMap.put("head", head);
         parameterMap.put("length", PageConsts.Announcement_PAGE_NUMBER);
 
         //获取符合条件的返回列表的数据
-        List<AnnouncementDTO> announcementList = announcementService.listAnnouncementRecycle(parameterMap);
+        List<DecorationDTO> announcementList = announcementService.listAnnouncementRecycle(parameterMap);
         resultMap.put("announcementList", announcementList);
 
 
@@ -138,10 +138,10 @@ public class AnnouncementController {
      * @param annContent
      * @return
      */
-    @RequestMapping(value = "/updateAnnouncement", method = RequestMethod.PUT)
-    public Map updateAnnouncement(@RequestParam(value = "annId") Integer annId,
-                                  @RequestParam(value = "annTitle") String annTitle,
-                                  @RequestParam(value = "annContent") String annContent) {
+    @RequestMapping(value = "/update", method = RequestMethod.PUT)
+    public Map updateAnnouncement(@RequestParam(value = "id") Integer annId,
+                                  @RequestParam(value = "title") String annTitle,
+                                  @RequestParam(value = "content") String annContent) {
         //保存返回给前端的数据的map
         Map resultMap = new HashMap();
         //用来保存数据库方法的传入的参数的值
@@ -197,7 +197,7 @@ public class AnnouncementController {
      * @param idList
      * @return
      */
-    @RequestMapping(value = "/deleteAnnouncement", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Map deleteFeedback(@RequestParam(value = "type") Integer type,
                               @RequestParam(value = "idList[]") int[] idList) {
         //存放返回给前端数据的一个map
@@ -268,9 +268,9 @@ public class AnnouncementController {
      * @param annContent
      * @return
      */
-    @RequestMapping(value = "/insertAnnouncement", method = RequestMethod.POST)
-    public Map insertAnnouncement(@RequestParam(value = "annTitle") String annTitle,
-                                  @RequestParam(value = "annContent") String annContent) {
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    public Map insertAnnouncement(@RequestParam(value = "title") String annTitle,
+                                  @RequestParam(value = "content") String annContent) {
         //用来保存返回给前端数据的map
         Map resultMap = new HashMap();
 
@@ -307,8 +307,6 @@ public class AnnouncementController {
         return resultMap;
 
     }
-
-
 
 
 }

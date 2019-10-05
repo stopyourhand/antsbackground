@@ -1,6 +1,7 @@
 package com.ants.antsbackground.impl.announcement;
 
 import com.ants.antsbackground.dto.AnnouncementDTO;
+import com.ants.antsbackground.dto.DecorationDTO;
 import com.ants.antsbackground.dto.FeedbackDTO;
 import com.ants.antsbackground.entity.announcement.Announcement;
 import com.ants.antsbackground.entity.feedback.Feedback;
@@ -29,18 +30,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
      * @param parameterMap
      * @return
      */
-    public List<AnnouncementDTO> listAnnouncement(Map<String,Integer> parameterMap){
+    public List<DecorationDTO> listAnnouncement(Map<String,Integer> parameterMap){
         //返回从数据库中获取的公告的信息列表
         List<Announcement> announcementList = announcementMapper.listAnnouncement(parameterMap);
         //声明一个保存新的返回数据的格式的DTO列表
-        List<AnnouncementDTO> announcementDTOList = new LinkedList<>();
+        List<DecorationDTO> decorationDTOList = new LinkedList<>();
 
         //获取公告列表的长度
         int length = announcementList.size();
 
         //声明反馈对象
         Announcement announcement = null;
-        AnnouncementDTO announcementDTO = null;
+        DecorationDTO decorationDTO = null;
 
         //遍历用户反馈信息列表，将列表中的数据对象进行DTO数据对象封装
         for (int index = 0; index < length; index++) {
@@ -53,18 +54,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             String annContent = announcement.getAnnContent();
             String annReleaseTime = announcement.getAnnTime();
 
-            announcementDTO = new AnnouncementDTO();
+            decorationDTO = new DecorationDTO();
             //DTO赋值
-            announcementDTO.setAnnId(annId);
-            announcementDTO.setAnnTitle(annTitle);
-            announcementDTO.setAnnContent(annContent);
-            announcementDTO.setAnnReleaseTime(annReleaseTime);
+            decorationDTO.setId(annId);
+            decorationDTO.setTitle(annTitle);
+            decorationDTO.setContent(annContent);
+            decorationDTO.setTime(annReleaseTime);
 
             //将新的传输对象DTO添加到返回值列表里
-            announcementDTOList.add(announcementDTO);
+            decorationDTOList.add(decorationDTO);
         }
 
-        return announcementDTOList;
+        return decorationDTOList;
     }
 
     /**
@@ -72,18 +73,18 @@ public class AnnouncementServiceImpl implements AnnouncementService {
      * @param parameterMap
      * @return
      */
-    public List<AnnouncementDTO> listAnnouncementRecycle(Map<String,Integer> parameterMap){
+    public List<DecorationDTO> listAnnouncementRecycle(Map<String,Integer> parameterMap){
         //返回从数据库中获取的用户反馈的信息列表
         List<Announcement> announcementList = announcementMapper.listAnnouncementRecycle(parameterMap);
         //声明一个保存新的返回数据的格式的DTO列表
-        List<AnnouncementDTO> announcementDTOLinkedList = new LinkedList<>();
+        List<DecorationDTO> decorationDTOList = new LinkedList<>();
 
         //获取用户反馈信息列表的长度
         int length = announcementList.size();
 
         //声明反馈对象
         Announcement announcement = null;
-        AnnouncementDTO announcementDTO = null;
+        DecorationDTO decorationDTO = null;
 
         //遍历用户反馈信息列表，将列表中的数据对象进行DTO数据对象封装
         for (int index = 0; index < length; index++) {
@@ -95,17 +96,17 @@ public class AnnouncementServiceImpl implements AnnouncementService {
             String annTitle = announcement.getAnnTitle();
             String annTime = announcement.getAnnTime();
 
-            announcementDTO = new AnnouncementDTO();
+            decorationDTO = new DecorationDTO();
             //DTO赋值
-            announcementDTO.setAnnId(annId);
-            announcementDTO.setAnnTitle(annTitle);
-            announcementDTO.setAnnReleaseTime(annTime);
+            decorationDTO.setId(annId);
+            decorationDTO.setTitle(annTitle);
+            decorationDTO.setTime(annTime);
 
             //将新的传输对象DTO添加到返回值列表里
-            announcementDTOLinkedList.add(announcementDTO);
+            decorationDTOList.add(decorationDTO);
 
         }
-        return announcementDTOLinkedList;
+        return decorationDTOList;
     }
 
     /**

@@ -1,29 +1,28 @@
-package com.ants.antsbackground.mapper.people;
+package com.ants.antsbackground.service.people;
 
 import com.ants.antsbackground.dto.UserDTO;
-import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 
 /**
- * 处理用户的数据库层
- *
  * @Author czd
- * @Date:created in 2019/9/24
+ * @Date:createed in
  * @Version: V1.0
  */
-@Mapper
-public interface UserMapper {
-
+@Service
+public interface UserService {
     /**
      * 获取网站现在的用户总数量，总人数
+     *
      * @return
      */
     Integer countUserNumber();
 
     /**
      * 获取在指定时间内注册的用户人数(七天内注册)
+     *
      * @param parameterMap
      * @return
      */
@@ -42,5 +41,4 @@ public interface UserMapper {
      * @return
      */
     Integer countUser(Map<String,Integer> parameterMap);
-
 }

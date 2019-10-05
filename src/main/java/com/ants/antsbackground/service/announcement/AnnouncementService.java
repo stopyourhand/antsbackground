@@ -1,6 +1,7 @@
 package com.ants.antsbackground.service.announcement;
 
 import com.ants.antsbackground.dto.AnnouncementDTO;
+import com.ants.antsbackground.dto.DecorationDTO;
 import com.ants.antsbackground.entity.announcement.Announcement;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public interface AnnouncementService {
      * @param parameterMap
      * @return
      */
-    List<AnnouncementDTO> listAnnouncement(Map<String, Integer> parameterMap);
+    List<DecorationDTO> listAnnouncement(Map<String, Integer> parameterMap);
 
 
     /**
@@ -70,6 +71,6 @@ public interface AnnouncementService {
      * @param parameter
      * @return
      */
-    List<AnnouncementDTO> listAnnouncementRecycle(Map<String, Integer> parameter);
+    List<DecorationDTO> listAnnouncementRecycle(Map<String, Integer> parameter);
 
 }

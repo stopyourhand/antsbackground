@@ -11,13 +11,11 @@ import com.ants.antsbackground.service.commodity.SeekService;
 import com.ants.antsbackground.service.people.UserService;
 import com.ants.antsbackground.service.sell.SellService;
 import com.ants.antsbackground.util.CountDateUtil;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.crypto.Data;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;

@@ -13,4 +13,8 @@ public class PageConsts {
     public final static Integer Announcement_PAGE_NUMBER = 8;
     /** 发布管理列表一个页面有8条数据 */
     public final static Integer AUDIT_PAGE_NUMBER = 8;
+    /** 商品管理管理列表一个页面有8条数据 */
+    public final static Integer GOODS_Management_PAGE_NUMBER = 8;
+    /** 用户管理管理列表一个页面有8条数据 */
+    public final static Integer USER_MANAGEMENT_PAGE_NUMBER = 8;
 }

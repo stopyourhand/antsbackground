@@ -33,7 +33,7 @@ public class AdministratorController {
      * @param passWord
      * @return
      */
-    @PostMapping(value = "/loginToJudge")
+    @PostMapping(value = "/login")
     public Map loginToJudge(@RequestParam(value = "account") int account,
                             @RequestParam(value = "passWord") String passWord) {
 
@@ -74,11 +74,10 @@ public class AdministratorController {
             InterfaceAnalysisUtil interfaceAnalysisUtil = new InterfaceAnalysisUtil();
             //调用学校接口进行登录
             String accounts = String.valueOf(account);
-            resultMap = interfaceAnalysisUtil.analysis(accounts,passWord);
+            resultMap = interfaceAnalysisUtil.analysis(accounts, passWord);
 
             return resultMap;
         }
-
 
 
     }
@@ -92,7 +91,7 @@ public class AdministratorController {
      * @param newPassword
      * @return
      */
-    @PatchMapping(value = "/updateAdminPassword")
+    @PatchMapping(value = "/update")
     public Map<String, String> updateAdminPassword(HttpServletRequest request,
                                                    @RequestParam(value = "oldPassword") String oldPassword,
                                                    @RequestParam(value = "newPassword") String newPassword) {

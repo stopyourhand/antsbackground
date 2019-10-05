@@ -1,8 +1,7 @@
 package com.ants.antsbackground.impl.feedback;
 
-import com.ants.antsbackground.dto.AnnouncementDTO;
+import com.ants.antsbackground.dto.DecorationDTO;
 import com.ants.antsbackground.dto.FeedbackDTO;
-import com.ants.antsbackground.entity.announcement.Announcement;
 import com.ants.antsbackground.entity.feedback.Feedback;
 import com.ants.antsbackground.mapper.feedback.FeedbackMapper;
 import com.ants.antsbackground.service.feedback.FeedbackService;
@@ -33,18 +32,18 @@ public class FeedbackServiceImpl implements FeedbackService {
      * @param parameterMap
      * @return
      */
-    public List<FeedbackDTO> listFeedback(Map<String, Integer> parameterMap) {
+    public List<DecorationDTO> listFeedback(Map<String, Integer> parameterMap) {
         //返回从数据库中获取的用户反馈的信息列表
         List<Feedback> feedbackList = feedbackMapper.listFeedback(parameterMap);
         //声明一个保存新的返回数据的格式的DTO列表
-        List<FeedbackDTO> feedbackDTOList = new LinkedList<>();
+        List<DecorationDTO> decorationDTOList = new LinkedList<>();
 
         //获取用户反馈信息列表的长度
         int length = feedbackList.size();
 
         //声明反馈对象
         Feedback feedback = null;
-        FeedbackDTO feedbackDTO = null;
+        DecorationDTO decorationDTO = null;
 
         //遍历用户反馈信息列表，将列表中的数据对象进行DTO数据对象封装
         for (int index = 0; index < length; index++) {
@@ -57,18 +56,18 @@ public class FeedbackServiceImpl implements FeedbackService {
             int fbSatisfaction = feedback.getFbSatisfaction();
             String fbTime = feedback.getFbTime();
 
-            feedbackDTO = new FeedbackDTO();
+            decorationDTO = new DecorationDTO();
             //DTO赋值
-            feedbackDTO.setFbId(fbId);
-            feedbackDTO.setFbSerial(fbSerial);
-            feedbackDTO.setFbSatisfaction(fbSatisfaction);
-            feedbackDTO.setFbTime(fbTime);
+            decorationDTO.setId(fbId);
+            decorationDTO.setSerial(fbSerial);
+            decorationDTO.setSatisfaction(fbSatisfaction);
+            decorationDTO.setTime(fbTime);
 
             //将新的传输对象DTO添加到返回值列表里
-            feedbackDTOList.add(feedbackDTO);
+            decorationDTOList.add(decorationDTO);
         }
 
-        return feedbackDTOList;
+        return decorationDTOList;
     }
 
     /**
@@ -103,10 +102,10 @@ public class FeedbackServiceImpl implements FeedbackService {
 
             feedbackDTO = new FeedbackDTO();
             //DTO赋值
-            feedbackDTO.setFbId(fbId);
-            feedbackDTO.setFbSerial(fbSerial);
-            feedbackDTO.setFbSatisfaction(fbSatisfaction);
-            feedbackDTO.setFbTime(fbTime);
+            feedbackDTO.setId(fbId);
+            feedbackDTO.setSerial(fbSerial);
+            feedbackDTO.setSatisfaction(fbSatisfaction);
+            feedbackDTO.setTime(fbTime);
 
             //将新的传输对象DTO添加到返回值列表里
             feedbackDTOLinkedList.add(feedbackDTO);

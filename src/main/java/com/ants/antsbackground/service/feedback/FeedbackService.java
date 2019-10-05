@@ -1,5 +1,6 @@
 package com.ants.antsbackground.service.feedback;
 
+import com.ants.antsbackground.dto.DecorationDTO;
 import com.ants.antsbackground.dto.FeedbackDTO;
 import com.ants.antsbackground.entity.feedback.Feedback;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public interface FeedbackService {
      * @param parameterMap
      * @return
      */
-    List<FeedbackDTO> listFeedback(Map<String, Integer> parameterMap);
+    List<DecorationDTO> listFeedback(Map<String, Integer> parameterMap);
 
     /**
      * 获取回收站里的公告信息
