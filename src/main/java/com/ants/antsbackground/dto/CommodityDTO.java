@@ -14,7 +14,7 @@ public class CommodityDTO {
     /** 卖家用户名称 */
     private String userName;
     /** 商品审核类型 0:闲置 1:赠送 2:租赁 3:寻求 */
-    private String goodsType;
+    private Integer goodsType;
     /** 商品名称 */
     private String name;
     /** 商品价格 */

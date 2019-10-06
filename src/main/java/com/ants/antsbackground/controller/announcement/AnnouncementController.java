@@ -2,20 +2,15 @@ package com.ants.antsbackground.controller.announcement;
 
 
 import com.ants.antsbackground.constant.PageConsts;
-import com.ants.antsbackground.dto.AnnouncementDTO;
 import com.ants.antsbackground.dto.DecorationDTO;
-import com.ants.antsbackground.dto.FeedbackDTO;
 import com.ants.antsbackground.entity.announcement.Announcement;
 import com.ants.antsbackground.service.announcement.AnnouncementService;
-import com.ants.antsbackground.service.feedback.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.security.auth.callback.TextInputCallback;
-import javax.xml.crypto.Data;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +49,7 @@ public class AnnouncementController {
         int countAnnouncementNumber = announcementService.countAnnouncementNumber(state);
 
         //计算反馈列表的总页数
-        int allPage = (countAnnouncementNumber / PageConsts.Announcement_PAGE_NUMBER) + 1;
+        int allPage = (countAnnouncementNumber / PageConsts.ANNOUNCEMENT_PAGE_NUMBER) + 1;
         if (allPage <= 0) {
             resultMap.put("msg", "页面数传输有误!");
             return resultMap;
@@ -68,11 +63,11 @@ public class AnnouncementController {
         }
 
         //获取页面数开始的数据信息在数据库的坐标信息
-        int head = (currentPage - 1) * PageConsts.Announcement_PAGE_NUMBER;
+        int head = (currentPage - 1) * PageConsts.ANNOUNCEMENT_PAGE_NUMBER;
 
         //传入初始页面的列表返回值
         parameterMap.put("head", head);
-        parameterMap.put("length", PageConsts.Announcement_PAGE_NUMBER);
+        parameterMap.put("length", PageConsts.ANNOUNCEMENT_PAGE_NUMBER);
 
         //获取符合条件的返回列表的数据
         List<DecorationDTO> announcementList = announcementService.listAnnouncement(parameterMap);
@@ -104,7 +99,7 @@ public class AnnouncementController {
             return resultMap;
         }
         //计算反馈列表的总页数
-        int allPage = (countAnnouncementNumber / PageConsts.Announcement_PAGE_NUMBER) + 1;
+        int allPage = (countAnnouncementNumber / PageConsts.ANNOUNCEMENT_PAGE_NUMBER) + 1;
         if (allPage <= 0) {
             resultMap.put("msg", "页面数传输有误!");
             return resultMap;
@@ -114,12 +109,12 @@ public class AnnouncementController {
 
 
         //获取页面数开始的数据信息在数据库的坐标信息
-        int head = (currentPage - 1) * PageConsts.Announcement_PAGE_NUMBER;
+        int head = (currentPage - 1) * PageConsts.ANNOUNCEMENT_PAGE_NUMBER;
 
         //传入初始页面的列表返回值
         parameterMap.put("state", 1);
         parameterMap.put("head", head);
-        parameterMap.put("length", PageConsts.Announcement_PAGE_NUMBER);
+        parameterMap.put("length", PageConsts.ANNOUNCEMENT_PAGE_NUMBER);
 
         //获取符合条件的返回列表的数据
         List<DecorationDTO> announcementList = announcementService.listAnnouncementRecycle(parameterMap);
