@@ -29,6 +29,7 @@
               <if test="judge == 1">
                   WHERE userType = #{userType}
               </if>
+              LIMIT #{head},#{length}
     </select>
 
     <!--获取网站现在的用户（包括回收站）总数量，总人数-->

@@ -17,4 +17,7 @@ public class PageConsts {
     public final static Integer GOODS_MANAGEMENT_PAGE_NUMBER = 8;
     /** 用户管理管理列表一个页面有8条数据 */
     public final static Integer USER_MANAGEMENT_PAGE_NUMBER = 8;
+    /** 游客管理管理列表一个页面有8条数据 */
+    public final static Integer VISITOR_MANAGEMENT_PAGE_NUMBER = 8;
+
 }

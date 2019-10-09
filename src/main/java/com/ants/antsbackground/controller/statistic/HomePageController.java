@@ -136,7 +136,7 @@ public class HomePageController {
         }
         resultMap.put("releaseLeaseNumber", releaseLeaseNumber);
 
-        int releaseGiveNumber = seekService.countReleaseSeekNumber(parameterMap);
+        int releaseGiveNumber = giveService.countReleaseGiveNumber(parameterMap);
         //计算最近七天的赠送数量
         if (releaseGiveNumber < 0) {
             resultMap.put("msg", "网站获取数据错误，请重新请求!");
