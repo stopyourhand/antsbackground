@@ -2,6 +2,7 @@ package com.ants.antsbackground.impl.commodity;
 
 import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.entity.commodity.LeaseGoods;
 import com.ants.antsbackground.mapper.commodity.LeaseMapper;
 import com.ants.antsbackground.service.commodity.IdleService;
 import com.ants.antsbackground.service.commodity.LeaseService;
@@ -41,6 +42,15 @@ public class LeaseServiceImpl implements LeaseService {
     }
 
     /**
+     * 获取交易分析的列出不同时间段的发布成功的租赁的商品的信息
+     * @param parameterMap
+     * @return
+     */
+    public List<LeaseGoods> listLeaseAnalysis(Map<String,String> parameterMap){
+        return leaseMapper.listLeaseAnalysis(parameterMap);
+    }
+
+    /**
      * 统计审核通过的闲置的商品的数量
      * @return
      */
@@ -68,4 +78,12 @@ public class LeaseServiceImpl implements LeaseService {
         return leaseMapper.countLeaseCommodity(goodsType);
     }
 
+    /**
+     * 获取在指定时间内不同分类的租赁商品的数量
+     * @param parameterMap
+     * @return
+     */
+    public Integer countReleaseClassifyLeaseNumber(Map<String,Integer> parameterMap){
+        return leaseMapper.countReleaseClassifyLeaseNumber(parameterMap);
+    }
 }

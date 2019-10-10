@@ -22,11 +22,25 @@
               WHERE  uploadTime BETWEEN #{startTime} AND #{endTime}
     </select>
 
+    <!--获取在指定时间内不同分类的赠送商品的数量-->
+    <select id="countReleaseClassifyGiveNumber" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_goods_give`
+              WHERE  goodsClass BETWEEN #{start} AND #{end}
+    </select>
+
     <!--获取在已经通过审核的赠送的商品名称,价格,发布类型以及所属卖家信息的列表-->
     <select id="listAuditedGiveGoods" parameterType="Map" resultMap="auditMap">
         SELECT goodsId,goodsName,goodsPrice,userName
               FROM ants_user_base as us ,ants_goods_give as give
                   WHERE us.studentId = give.goodsBelong
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--获取交易分析的列出不同时间段的发布成功的赠送的商品的信息-->
+    <select id="listGiveAnalysis" parameterType="Map" resultType="com.ants.antsbackground.entity.commodity.GiveGoods">
+        SELECT goodsName,goodsClass,goodsPrice
+              FROM `ants_goods_give`
+                  WHERE uploadTime BETWEEN #{startTime} AND #{endTime}
                       LIMIT #{head},#{length}
     </select>
 

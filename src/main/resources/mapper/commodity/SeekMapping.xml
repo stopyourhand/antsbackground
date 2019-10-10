@@ -25,9 +25,23 @@
                       LIMIT #{head},#{length}
     </select>
 
+    <!--获取在指定时间内不同分类的寻求商品的数量-->
+    <select id="countReleaseClassifySeekNumber" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_goods_seek`
+              WHERE  goodsClass BETWEEN #{start} AND #{end}
+    </select>
+
     <!--统计审核通过的寻求的商品的数量-->
     <select id="countAuditedSeekGoods" resultType="Integer">
         SELECT COUNT(*) FROM ants_goods_seek
+    </select>
+
+    <!--获取交易分析的列出不同时间段的发布成功的寻求的商品的信息-->
+    <select id="listSeekAnalysis" parameterType="Map" resultType="com.ants.antsbackground.entity.commodity.SeekGoods">
+        SELECT goodsName,goodsClass,goodsPrice
+              FROM `ants_goods_seek`
+                  WHERE uploadTime BETWEEN #{startTime} AND #{endTime}
+                      LIMIT #{head},#{length}
     </select>
 
     <!--获取在指定时间内(七天)发布寻求的数量-->

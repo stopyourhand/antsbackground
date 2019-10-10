@@ -2,6 +2,7 @@ package com.ants.antsbackground.mapper.commodity;
 
 import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.entity.commodity.GiveGoods;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -31,6 +32,13 @@ public interface GiveMapper {
     List<AuditDTO> listAuditedGiveGoods(Map<String,Integer> parameterMap);
 
     /**
+     * 获取交易分析的列出不同时间段的发布成功的赠送的商品的信息
+     * @param parameterMap
+     * @return
+     */
+    List<GiveGoods> listGiveAnalysis(Map<String,String> parameterMap);
+
+    /**
      * 统计审核通过的赠送的商品的数量
      * @return
      */
@@ -49,6 +57,13 @@ public interface GiveMapper {
      * @return
      */
     Integer countGiveCommodity(int goodsType);
+
+    /**
+     * 获取在指定时间内不同分类的赠送商品的数量
+     * @param parameterMap
+     * @return
+     */
+    Integer countReleaseClassifyGiveNumber(Map<String,Integer> parameterMap);
 
 
 }

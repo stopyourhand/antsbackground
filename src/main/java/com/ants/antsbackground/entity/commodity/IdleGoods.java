@@ -4,14 +4,16 @@ import lombok.Data;
 import org.springframework.stereotype.Component;
 
 /**
- * 审核数据库表
+ * 对应着ants_goods_base这张数据库表
+ * 闲置物品
  * @Author czd
- * @Date:createed in 2019/9/28
+ * @Date:created in 2019/10/11
  * @Version: V1.0
+
  */
-@Data
 @Component
-public class Audit {
+@Data
+public class IdleGoods {
     /** 商品id */
     private int goodsId;
     /** 商品名称 */
@@ -26,10 +28,8 @@ public class Audit {
     private int goodsClass;
     /** 商品价格 */
     private double goodsPrice;
-    /** 商品状态: 0 待审核 1回收站 */
+    /** 商品交易状态：0 -> 未交易 1 -> 交易中 */
     private int goodsState;
-    /** 商品审核类型 0:闲置 1:赠送 2:租赁 3:寻求 */
-    private int goodsType;
     /** 商品是否议价：0 -> 可议价 1 -> 不可议价 */
     private int goodsBargin;
     /** 商品所属卖家id */

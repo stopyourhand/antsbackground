@@ -2,6 +2,7 @@ package com.ants.antsbackground.impl.commodity;
 
 import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.entity.commodity.SeekGoods;
 import com.ants.antsbackground.mapper.commodity.SeekMapper;
 import com.ants.antsbackground.service.commodity.IdleService;
 import com.ants.antsbackground.service.commodity.SeekService;
@@ -30,8 +31,18 @@ public class SeekServiceImpl implements SeekService {
      * @param parameterMap
      * @return
      */
-    public List<AuditDTO> listAuditedSeekGoods(Map<String, Integer> parameterMap){
+    public List<AuditDTO> listAuditedSeekGoods(Map<String, Integer> parameterMap) {
         return seekMapper.listAuditedSeekGoods(parameterMap);
+    }
+
+    /**
+     * 获取交易分析的列出不同时间段的发布成功的寻求的商品的信息
+     *
+     * @param parameterMap
+     * @return
+     */
+    public List<SeekGoods> listSeekAnalysis(Map<String, String> parameterMap) {
+        return seekMapper.listSeekAnalysis(parameterMap);
     }
 
     /**
@@ -39,7 +50,7 @@ public class SeekServiceImpl implements SeekService {
      *
      * @return
      */
-    public Integer countAuditedSeekGoods(){
+    public Integer countAuditedSeekGoods() {
         return seekMapper.countAuditedSeekGoods();
     }
 
@@ -58,7 +69,7 @@ public class SeekServiceImpl implements SeekService {
      * @param parameterMap
      * @return
      */
-    public List<CommodityDTO> listSeekCommodity(Map<String, Integer> parameterMap){
+    public List<CommodityDTO> listSeekCommodity(Map<String, Integer> parameterMap) {
         return seekMapper.listSeekCommodity(parameterMap);
     }
 
@@ -68,7 +79,17 @@ public class SeekServiceImpl implements SeekService {
      * @param goodsType
      * @return
      */
-    public Integer countSeekCommodity(int goodsType){
+    public Integer countSeekCommodity(int goodsType) {
         return countSeekCommodity(goodsType);
+    }
+
+    /**
+     * 获取在指定时间内不同分类的寻求商品的数量
+     *
+     * @param parameterMap
+     * @return
+     */
+    public Integer countReleaseClassifySeekNumber(Map<String, Integer> parameterMap){
+        return seekMapper.countReleaseClassifySeekNumber(parameterMap);
     }
 }

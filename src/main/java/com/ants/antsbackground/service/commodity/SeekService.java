@@ -2,6 +2,7 @@ package com.ants.antsbackground.service.commodity;
 
 import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.entity.commodity.SeekGoods;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +26,13 @@ public interface SeekService {
      * @return
      */
     List<AuditDTO> listAuditedSeekGoods(Map<String, Integer> parameterMap);
+
+    /**
+     * 获取交易分析的列出不同时间段的发布成功的寻求的商品的信息
+     * @param parameterMap
+     * @return
+     */
+    List<SeekGoods> listSeekAnalysis(Map<String,String> parameterMap);
 
     /**
      * 统计审核通过的寻求的商品的数量
@@ -55,6 +63,13 @@ public interface SeekService {
      * @return
      */
     Integer countSeekCommodity(int goodsType);
+
+    /**
+     * 获取在指定时间内不同分类的寻求商品的数量
+     * @param parameterMap
+     * @return
+     */
+    Integer countReleaseClassifySeekNumber(Map<String,Integer> parameterMap);
 
 
 }

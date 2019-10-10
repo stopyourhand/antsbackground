@@ -2,6 +2,7 @@ package com.ants.antsbackground.impl.commodity;
 
 import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.entity.commodity.IdleGoods;
 import com.ants.antsbackground.mapper.commodity.IdleMapper;
 import com.ants.antsbackground.mapper.sell.SellMapper;
 import com.ants.antsbackground.service.commodity.IdleService;
@@ -44,6 +45,15 @@ public class IdleServiceImpl implements IdleService {
     }
 
     /**
+     * 获取交易分析的列出不同时间段的发布成功的闲置的商品的信息
+     * @param parameterMap
+     * @return
+     */
+    public List<IdleGoods> listIdleAnalysis(Map<String,String> parameterMap){
+        return idleMapper.listIdleAnalysis(parameterMap);
+    }
+
+    /**
      * 统计审核通过的闲置的商品的数量
      *
      * @return
@@ -72,4 +82,12 @@ public class IdleServiceImpl implements IdleService {
         return idleMapper.countIdleCommodity(goodsType);
     }
 
+    /**
+     * 获取在指定时间内不同分类的闲置商品的数量
+     * @param parameterMap
+     * @return
+     */
+    public Integer countReleaseClassifyIdleNumber(Map<String,Integer> parameterMap){
+        return idleMapper.countReleaseClassifyIdleNumber(parameterMap);
+    }
 }

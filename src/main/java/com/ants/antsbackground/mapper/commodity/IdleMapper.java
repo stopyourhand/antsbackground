@@ -2,6 +2,8 @@ package com.ants.antsbackground.mapper.commodity;
 
 import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.entity.commodity.GiveGoods;
+import com.ants.antsbackground.entity.commodity.IdleGoods;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -32,6 +34,13 @@ public interface IdleMapper {
     List<AuditDTO> listAuditedIdleGoods(Map<String, Integer> parameterMap);
 
     /**
+     * 获取交易分析的列出不同时间段的发布成功的闲置的商品的信息
+     * @param parameterMap
+     * @return
+     */
+    List<IdleGoods> listIdleAnalysis(Map<String,String> parameterMap);
+
+    /**
      * 统计审核通过的闲置的商品的数量
      *
      * @return
@@ -53,5 +62,12 @@ public interface IdleMapper {
      * @return
      */
     Integer countIdleCommodity(int goodsType);
+
+    /**
+     * 获取在指定时间内不同分类的闲置商品的数量
+     * @param parameterMap
+     * @return
+     */
+    Integer countReleaseClassifyIdleNumber(Map<String,Integer> parameterMap);
 
 }

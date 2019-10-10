@@ -2,6 +2,7 @@ package com.ants.antsbackground.service.commodity;
 
 import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.entity.commodity.GiveGoods;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,6 +31,13 @@ public interface GiveService {
     List<AuditDTO> listAuditedGiveGoods(Map<String,Integer> parameterMap);
 
     /**
+     * 获取交易分析的列出不同时间段的发布成功的赠送的商品的信息
+     * @param parameterMap
+     * @return
+     */
+    List<GiveGoods> listGiveAnalysis(Map<String,String> parameterMap);
+
+    /**
      * 统计审核通过的赠送的商品的数量
      * @return
      */
@@ -48,4 +56,11 @@ public interface GiveService {
      * @return
      */
     Integer countGiveCommodity(int goodsType);
+
+    /**
+     * 获取在指定时间内不同分类的赠送商品的数量
+     * @param parameterMap
+     * @return
+     */
+    Integer countReleaseClassifyGiveNumber(Map<String,Integer> parameterMap);
 }

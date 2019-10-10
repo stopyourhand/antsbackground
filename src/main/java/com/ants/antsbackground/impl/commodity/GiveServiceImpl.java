@@ -2,6 +2,7 @@ package com.ants.antsbackground.impl.commodity;
 
 import com.ants.antsbackground.dto.AuditDTO;
 import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.entity.commodity.GiveGoods;
 import com.ants.antsbackground.mapper.commodity.GiveMapper;
 import com.ants.antsbackground.service.commodity.GiveService;
 import com.ants.antsbackground.service.commodity.IdleService;
@@ -44,6 +45,15 @@ public class GiveServiceImpl implements GiveService {
     }
 
     /**
+     * 获取交易分析的列出不同时间段的发布成功的赠送的商品的信息
+     * @param parameterMap
+     * @return
+     */
+    public List<GiveGoods> listGiveAnalysis(Map<String,String> parameterMap){
+        return giveMapper.listGiveAnalysis(parameterMap);
+    }
+
+    /**
      * 统计审核通过的赠送的商品的数量
      *
      * @return
@@ -70,5 +80,14 @@ public class GiveServiceImpl implements GiveService {
      */
     public Integer countGiveCommodity(int goodsType) {
         return giveMapper.countGiveCommodity(goodsType);
+    }
+
+    /**
+     * 获取在指定时间内不同分类的赠送商品的数量
+     * @param parameterMap
+     * @return
+     */
+    public Integer countReleaseClassifyGiveNumber(Map<String,Integer> parameterMap){
+        return giveMapper.countReleaseClassifyGiveNumber(parameterMap);
     }
 }

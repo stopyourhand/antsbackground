@@ -1,7 +1,9 @@
 package com.ants.antsbackground.mapper.sell;
 
+import com.ants.antsbackground.entity.sell.Sell;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,6 +15,14 @@ import java.util.Map;
  */
 @Mapper
 public interface SellMapper {
+
+    /**
+     * 获取交易分析的列出不同时间段的交易完成的商品的信息
+     * @param parameterMap
+     * @return
+     */
+    List<Sell> listSellAnalysis(Map<String,String> parameterMap);
+
     /**
      * 获取在指定时间内(七天)不同类型商品的交易数量
      * @param parameterMap
@@ -25,5 +35,12 @@ public interface SellMapper {
      * @return
      */
     Integer countAllSellGoodsNumber();
+
+    /**
+     * 获取在指定时间内不同分类的交易完成的商品的数量
+     * @param parameterMap
+     * @return
+     */
+    Integer countReleaseClassifySellNumber(Map<String,Integer> parameterMap);
 
 }
