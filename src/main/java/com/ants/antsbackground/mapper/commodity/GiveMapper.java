@@ -65,5 +65,17 @@ public interface GiveMapper {
      */
     Integer countReleaseClassifyGiveNumber(Map<String,Integer> parameterMap);
 
+    /**
+     * 彻底删除赠送商品的信息
+     * @param goodsId
+     * @return
+     */
+    Integer deleteGive(Integer goodsId);
 
+    /**
+     * 将赠送商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站
+     * @param parameterMap
+     * @return
+     */
+    Integer updateGive(Map<String,Integer> parameterMap);
 }

@@ -8,10 +8,7 @@ import com.ants.antsbackground.service.commodity.IdleService;
 import com.ants.antsbackground.service.commodity.LeaseService;
 import com.ants.antsbackground.service.commodity.SeekService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -169,7 +166,7 @@ public class GoodsController {
      * @param currentPage
      * @param goodsType
      * @return
-     * @Param auditType
+     * @Param goodsType
      */
     @GetMapping(value = "/listThrough")
     public Map goodsManagementThrough(@RequestParam(value = "currentPage") int currentPage,
@@ -424,5 +421,243 @@ public class GoodsController {
         }
         return resultMap;
     }
+
+    /**
+     * 判断对用户反馈的信息进行哪种审核操作（通过审核，撤销审核，警告）
+     * type -> 0 -> 通过审核
+     * type -> 1 -> 撤销审核
+     * type -> 2 -> 警告
+     * goodsType -> 商品审核类型 0:闲置 1:寻求 2:租赁 3:赠送
+     *
+     * @param type
+     * @param idList
+     * @return
+     */
+    @RequestMapping(value = "/check", method = RequestMethod.PATCH)
+    public Map checkGoods(@RequestParam(value = "type") Integer type,
+                          @RequestParam(value = "goodsType") Integer goodsType,
+                          @RequestParam(value = "idList[]") int[] idList) {
+        //存放返回给前端数据的一个map
+        Map resultMap = new HashMap(16);
+
+        //判断数据是否传输正确
+        if (goodsType < 0) {
+            resultMap.put("msg", "商品类型传输错误！");
+            return resultMap;
+        }
+        //存放对数据库的操作方法的参数的值
+        Map<String, Integer> parameterMap = new HashMap<>(16);
+
+        if (idList.length <= 0) {
+            resultMap.put("msg", "请选择要删除的反馈信息！");
+            return resultMap;
+        }
+        if (type < 0 || type > 2) {
+            resultMap.put("msg", "删除类型错误！");
+            return resultMap;
+        }
+
+        //设置压迫删除的商品类型 0:闲置 1:寻求 2:租赁 3:赠送
+        //对审核的操作类型进下判断
+        switch (type) {
+            //撤销审核，通过审核，对审核表中的商品进行状态改变，并且将商品信息添加到指定类型（闲置，寻求，租赁，赠送）商品表中
+            case 0:
+                //获取要通过审核的商品的id列表，对其进行状态改变，即弄进回收站里面
+                for (int goodsId : idList) {
+                    parameterMap.put("goodsId", goodsId);
+                    //goodsType 0:审核通过 1:回收站
+                    parameterMap.put("goodsType", 0);
+                    int result = 0;
+                    switch (goodsType){
+                        //闲置
+                        case 0:
+                            //将闲置商品的状态改为回收站
+                            result = idleService.updateIdle(parameterMap);
+                            break;
+                        //寻求
+                        case 1:
+                            //将寻求商品的状态改为回收站
+                            result = seekService.updateSeek(parameterMap);
+                            break;
+                        //租赁
+                        case 2:
+                            //将租赁商品的状态改为回收站
+                            result = leaseService.updateLease(parameterMap);
+                            break;
+                        //赠送
+                        case 3:
+                            //将赠送商品的状态改为回收站
+                            result = giveService.updateGive(parameterMap);
+                            break;
+                        default:{}
+                    }
+                    if (result <= 0) {
+                        resultMap.put("msg", "审核出现错误!");
+                        return resultMap;
+                    }
+                }
+                break;
+            //警告操作
+            case 1:
+                //警告操作
+                break;
+            default:{}
+        }
+        resultMap.put("msg", "删除成功!");
+        return resultMap;
+    }
+
+    /**
+     * 判断对用户反馈的信息进行哪种删除操作
+     * type -> 0 -> 删除
+     * type -> 1 -> 撤销删除
+     * type -> 2 -> 彻底删除
+     * goodsType -> 商品审核类型 0:闲置 1:赠送 2:租赁 3:寻求
+     *
+     * @param type
+     * @param idList
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Map deleteGoods(@RequestParam(value = "type") Integer type,
+                           @RequestParam(value = "goodsType") Integer goodsType,
+                           @RequestParam(value = "idList[]") int[] idList) {
+        //存放返回给前端数据的一个map
+        Map resultMap = new HashMap(16);
+        //存放对数据库的操作方法的参数的值
+        Map<String, Integer> parameterMap = new HashMap<>(16);
+
+        if (type < 0 || type > 2) {
+            resultMap.put("msg", "删除类型错误！");
+            return resultMap;
+        }
+        if (goodsType < 0) {
+            resultMap.put("msg", "商品类型传输错误！");
+            return resultMap;
+        }
+
+        if (idList.length <= 0) {
+            resultMap.put("msg", "请选择要删除的反馈信息！");
+            return resultMap;
+        }
+
+        //设置压迫删除的商品类型 0:闲置 1:赠送 2:租赁 3:寻求
+        parameterMap.put("goodsType", goodsType);
+        //对删除的操作类型进下判断
+        switch (type) {
+            //删除操作，即将用户反馈信息放进回收站
+            case 0:
+                //获取要通过审核的商品的id列表，对其进行状态改变，即弄进回收站里面
+                for (int goodsId : idList) {
+                    int result = 0;
+                    parameterMap.put("goodsId", goodsId);
+                    //goodsType 0:审核通过 1:回收站
+                    parameterMap.put("goodsType", 1);
+                    switch (goodsType){
+                        //闲置
+                        case 0:
+                            //将闲置商品的状态改为回收站
+                            result = idleService.updateIdle(parameterMap);
+                            break;
+                        //寻求
+                        case 1:
+                            //将寻求商品的状态改为回收站
+                            result = seekService.updateSeek(parameterMap);
+                            break;
+                        //租赁
+                        case 2:
+                            //将租赁商品的状态改为回收站
+                            result = leaseService.updateLease(parameterMap);
+                            break;
+                        //赠送
+                        case 3:
+                            //将赠送商品的状态改为回收站
+                            result = giveService.updateGive(parameterMap);
+                            break;
+                        default:{}
+                    }
+                    if (result <= 0) {
+                        resultMap.put("msg", "审核出现错误!");
+                        return resultMap;
+                    }
+                }
+                break;
+            //撤销删除操作
+            case 1:
+                //获取要通过审核的商品的id列表，对其进行状态改变，即弄进回收站里面
+                for (int goodsId : idList) {
+                    int result = 0;
+                    parameterMap.put("goodsId", goodsId);
+                    //goodsType 0:审核通过 1:回收站
+                    parameterMap.put("goodsType", 0);
+                    switch (goodsType){
+                        //闲置
+                        case 0:
+                            //将闲置商品的状态改为回收站
+                            result = idleService.updateIdle(parameterMap);
+                            break;
+                        //寻求
+                        case 1:
+                            //将寻求商品的状态改为回收站
+                            result = seekService.updateSeek(parameterMap);
+                            break;
+                        //租赁
+                        case 2:
+                            //将租赁商品的状态改为回收站
+                            result = leaseService.updateLease(parameterMap);
+                            break;
+                        //赠送
+                        case 3:
+                            //将赠送商品的状态改为回收站
+                            result = giveService.updateGive(parameterMap);
+                            break;
+                        default:{}
+                    }
+                    if (result <= 0) {
+                        resultMap.put("msg", "审核出现错误!");
+                        return resultMap;
+                    }
+                }
+                break;
+            //彻底删除
+            case 2:
+                //获取要通过审核的商品的id列表，对其进行状态改变，即弄进回收站里面
+                for (int goodsId : idList) {
+                    int result = 0;
+                    parameterMap.put("goodsId", goodsId);
+                    switch (goodsType){
+                        //闲置
+                        case 0:
+                            //将闲置商品的状态改为回收站
+                            result = idleService.deleteIdle(goodsId);
+                            break;
+                        //寻求
+                        case 1:
+                            //将寻求商品的状态改为回收站
+                            result = seekService.deleteSeek(goodsId);
+                            break;
+                        //租赁
+                        case 2:
+                            //将租赁商品的状态改为回收站
+                            result = leaseService.deleteLease(goodsId);
+                            break;
+                        //赠送
+                        case 3:
+                            //将赠送商品的状态改为回收站
+                            result = giveService.deleteGive(goodsId);
+                            break;
+                        default:{}
+                    }
+                    if (result <= 0) {
+                        resultMap.put("msg", "审核出现错误!");
+                        return resultMap;
+                    }
+                }
+                break;
+        }
+        resultMap.put("msg", "删除成功!");
+        return resultMap;
+    }
+
 
 }

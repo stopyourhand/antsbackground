@@ -78,4 +78,24 @@ public class VisitorServiceImpl implements VisitorService {
         return visitorDTOLinkedList;
     }
 
+    /**
+     * 彻底删除游客信息
+     *
+     * @param visitorId
+     * @return
+     */
+    public Integer deleteVisitor(Integer visitorId){
+        return visitorMapper.deleteVisitor(visitorId);
+    }
+
+    /**
+     * 将游客信息状态进行更改，即进入回收站
+     *
+     * @param parameterMap
+     * @return
+     */
+    public Integer updateVisitor(Map<String, Integer> parameterMap){
+        return visitorMapper.updateVisitor(parameterMap);
+    }
+
 }

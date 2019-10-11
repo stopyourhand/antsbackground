@@ -5,10 +5,7 @@ import com.ants.antsbackground.constant.PageConsts;
 import com.ants.antsbackground.dto.VisitorDTO;
 import com.ants.antsbackground.service.people.VisitorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -125,5 +122,77 @@ public class VisitorController {
 
         return resultMap;
     }
+
+    /**
+     * 判断对游客的信息进行哪种删除操作
+     * type -> 0 -> 删除
+     * type -> 1 -> 撤销删除
+     * type -> 2 -> 彻底删除
+     *
+     * @param type
+     * @param idList
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Map deleteFeedback(@RequestParam(value = "type") Integer type,
+                              @RequestParam(value = "idList[]") int[] idList) {
+        //存放返回给前端数据的一个map
+        Map resultMap = new HashMap(16);
+        //存放对数据库的操作方法的参数的值
+        Map<String, Integer> parameterMap = new HashMap<>(16);
+
+        if (type < 0 || type > 2) {
+            resultMap.put("msg", "删除类型错误！");
+            return resultMap;
+        }
+
+        if (idList.length <= 0) {
+            resultMap.put("msg", "请选择要删除的反馈信息！");
+            return resultMap;
+        }
+
+        //对删除的操作类型进下判断
+        switch (type) {
+            //删除操作，即将用户反馈信息放进回收站
+            case 0:
+                //获取要删除的反馈信息的id列表，对其进行状态改变，即弄进回收站里面
+                for (int visitorId : idList) {
+                    parameterMap.put("visitorId", visitorId);
+                    parameterMap.put("userType", 1);
+                    int result = visitorService.updateVisitor(parameterMap);
+                    if (result <= 0) {
+                        resultMap.put("msg", "删除错误，反馈编号出现错误!");
+                        return resultMap;
+                    }
+                }
+                break;
+            //撤销删除操作
+            case 1:
+                //获取要撤销删除的反馈信息的id列表，对其进行状态改变
+                for (int visitorId : idList) {
+                    parameterMap.put("visitorId", visitorId);
+                    parameterMap.put("userType", 0);
+                    int result = visitorService.updateVisitor(parameterMap);
+                    if (result <= 0) {
+                        resultMap.put("msg", "删除错误，反馈编号出现错误!");
+                        return resultMap;
+                    }
+                }
+                break;
+            //彻底删除
+            case 2:
+                //获取要撤销删除的反馈信息的id列表，对其进行状态改变
+                for (int visitorId : idList) {
+                    int result = visitorService.deleteVisitor(visitorId);
+                    if (result <= 0) {
+                        resultMap.put("msg", "删除错误，反馈编号出现错误!");
+                        return resultMap;
+                    }
+                }
+        }
+        resultMap.put("msg", "删除成功!");
+        return resultMap;
+    }
+
 
 }

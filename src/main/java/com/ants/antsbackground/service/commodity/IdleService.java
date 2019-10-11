@@ -66,5 +66,18 @@ public interface IdleService {
      */
     Integer countReleaseClassifyIdleNumber(Map<String,Integer> parameterMap);
 
+    /**
+     * 彻底删除闲置商品的信息
+     * @param goodsId
+     * @return
+     */
+    Integer deleteIdle(Integer goodsId);
+
+    /**
+     * 将闲置商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站
+     * @param parameterMap
+     * @return
+     */
+    Integer updateIdle(Map<String,Integer> parameterMap);
 
 }

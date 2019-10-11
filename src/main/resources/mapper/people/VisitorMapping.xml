@@ -29,5 +29,18 @@
         LIMIT #{head},#{length}
     </select>
 
+    <!--彻底删除游客信息-->
+    <delete id="deleteVisitor" parameterType="Integer">
+        DELETE FROM ants_visitor_base
+              WHERE visitor_id = #{visitorId}
+    </delete>
+
+    <!--将游客信息状态进行更改，即进入回收站-->
+    <update id="updateVisitor" parameterType="Map">
+        UPDATE ants_visitor_base
+              SET userType = #{userType}
+                  WHERE visitor_id = #{visitorId}
+    </update>
+
 
 </mapper>

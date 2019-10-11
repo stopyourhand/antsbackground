@@ -90,4 +90,22 @@ public class IdleServiceImpl implements IdleService {
     public Integer countReleaseClassifyIdleNumber(Map<String,Integer> parameterMap){
         return idleMapper.countReleaseClassifyIdleNumber(parameterMap);
     }
+
+    /**
+     * 彻底删除闲置商品的信息
+     * @param goodsId
+     * @return
+     */
+    public Integer deleteIdle(Integer goodsId){
+        return idleMapper.deleteIdle(goodsId);
+    }
+
+    /**
+     * 将闲置商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站
+     * @param parameterMap
+     * @return
+     */
+    public Integer updateIdle(Map<String,Integer> parameterMap){
+        return idleMapper.updateIdle(parameterMap);
+    }
 }

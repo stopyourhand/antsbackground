@@ -90,4 +90,22 @@ public class GiveServiceImpl implements GiveService {
     public Integer countReleaseClassifyGiveNumber(Map<String,Integer> parameterMap){
         return giveMapper.countReleaseClassifyGiveNumber(parameterMap);
     }
+
+    /**
+     * 彻底删除赠送商品的信息
+     * @param goodsId
+     * @return
+     */
+    public Integer deleteGive(Integer goodsId){
+        return giveMapper.deleteGive(goodsId);
+    }
+
+    /**
+     * 将赠送商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站
+     * @param parameterMap
+     * @return
+     */
+    public Integer updateGive(Map<String,Integer> parameterMap){
+        return giveMapper.updateGive(parameterMap);
+    }
 }

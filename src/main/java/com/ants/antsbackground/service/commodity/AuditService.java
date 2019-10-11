@@ -43,4 +43,18 @@ public interface AuditService {
      */
     Integer countAuditByRecycle(Map<String,Integer> parameterMap);
 
+    /**
+     * 彻底删除审核商品的信息
+     * @param goodsId
+     * @return
+     */
+    Integer deleteAudit(Integer goodsId);
+
+    /**
+     * 将审核商品状态进行更改，即进入回收站 -> 商品状态: 0 待审核 1回收站 2 审核通过
+     * @param parameterMap
+     * @return
+     */
+    Integer updateAudit(Map<String,Integer> parameterMap);
+
 }

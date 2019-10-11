@@ -92,4 +92,22 @@ public class SeekServiceImpl implements SeekService {
     public Integer countReleaseClassifySeekNumber(Map<String, Integer> parameterMap){
         return seekMapper.countReleaseClassifySeekNumber(parameterMap);
     }
+
+    /**
+     * 彻底删除寻求商品的信息
+     * @param goodsId
+     * @return
+     */
+    public Integer deleteSeek(Integer goodsId){
+        return seekMapper.deleteSeek(goodsId);
+    }
+
+    /**
+     * 将寻求商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站
+     * @param parameterMap
+     * @return
+     */
+    public Integer updateSeek(Map<String,Integer> parameterMap){
+        return seekMapper.updateSeek(parameterMap);
+    }
 }

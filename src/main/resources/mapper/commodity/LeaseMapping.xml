@@ -64,4 +64,17 @@
             WHERE goodsType = #{goodsType}
     </select>
 
+    <!--彻底删除租赁商品的信息-->
+    <delete id="deleteLease" parameterType="Integer">
+        DELETE FROM ants_goods_lease
+              WHERE goodsId = #{goodsId}
+    </delete>
+
+    <!--将租赁商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站 -->
+    <update id="updateLease" parameterType="Map">
+        UPDATE ants_goods_lease
+              SET goodsType = #{goodsType}
+                  WHERE goodsId = #{goodsId}
+    </update>
+
 </mapper>

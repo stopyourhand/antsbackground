@@ -62,4 +62,24 @@ public class UserServiceImpl implements UserService {
         return userMapper.countUser(parameterMap);
     }
 
+    /**
+     * 彻底删除用户信息
+     *
+     * @param studentId
+     * @return
+     */
+    public Integer deleteUser(Integer studentId){
+        return userMapper.deleteUser(studentId);
+    }
+
+    /**
+     * 将用户信息状态进行更改，即进入回收站 userType 0 正常 1 回收站
+     *
+     * @param parameterMap
+     * @return
+     */
+    public Integer updateUser(Map<String, Integer> parameterMap){
+        return userMapper.updateUser(parameterMap);
+    }
+
 }

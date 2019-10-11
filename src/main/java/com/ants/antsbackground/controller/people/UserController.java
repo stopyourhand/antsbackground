@@ -48,7 +48,7 @@ public class UserController {
             return resultMap;
         }
 
-        int length =PageConsts.USER_MANAGEMENT_PAGE_NUMBER;
+        int length = PageConsts.USER_MANAGEMENT_PAGE_NUMBER;
         //limit数据获取初始下标
         int head = (currentPage - 1) * length;
         parameterMap.put("head", head);
@@ -84,7 +84,7 @@ public class UserController {
      * @return
      */
     @GetMapping(value = "/listRecycle")
-    public Map usersManagementRecycle(@RequestParam(value = "currentPage") int currentPage){
+    public Map usersManagementRecycle(@RequestParam(value = "currentPage") int currentPage) {
         //用来保存返回给前端数据的hashMap
         Map resultMap = new HashMap(16);
         //判断数据是否符合要求
@@ -99,7 +99,6 @@ public class UserController {
         int head = (currentPage - 1) * PageConsts.USER_MANAGEMENT_PAGE_NUMBER;
         parameterMap.put("head", head);
         parameterMap.put("length", PageConsts.USER_MANAGEMENT_PAGE_NUMBER);
-
 
 
         //获取数据库中回收站用户的数据信息
@@ -126,5 +125,77 @@ public class UserController {
 
         return resultMap;
     }
+
+    /**
+     * 判断对用户信息进行哪种删除操作
+     * type -> 0 -> 删除
+     * type -> 1 -> 撤销删除
+     * type -> 2 -> 彻底删除
+     *
+     * @param type
+     * @param idList
+     * @return
+     */
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Map deleteUser(@RequestParam(value = "type") Integer type,
+                          @RequestParam(value = "idList[]") int[] idList) {
+        //存放返回给前端数据的一个map
+        Map resultMap = new HashMap(16);
+
+        if (type < 0 || type > 2) {
+            resultMap.put("msg", "删除类型错误！");
+            return resultMap;
+        }
+
+        if (idList.length <= 0) {
+            resultMap.put("msg", "请选择要删除的反馈信息！");
+            return resultMap;
+        }
+
+        //存放对数据库的操作方法的参数的值
+        Map<String, Integer> parameterMap = new HashMap<>(16);
+        //对删除的操作类型进下判断
+        switch (type) {
+            //删除操作，即将用户信息放进回收站
+            case 0:
+                //获取要删除的反馈信息的id列表，对其进行状态改变，即弄进回收站里面
+                for (int studentId : idList) {
+                    parameterMap.put("studentId", studentId);
+                    parameterMap.put("userType", 1);
+                    int result = userService.updateUser(parameterMap);
+                    if (result <= 0) {
+                        resultMap.put("msg", "删除错误，反馈编号出现错误!");
+                        return resultMap;
+                    }
+                }
+                break;
+            //撤销删除操作
+            case 1:
+                //获取要撤销删除的用户信息的id列表，对其进行状态改变
+                for (int studentId : idList) {
+                    parameterMap.put("studentId", studentId);
+                    parameterMap.put("userType", 0);
+                    int result = userService.updateUser(parameterMap);
+                    if (result <= 0) {
+                        resultMap.put("msg", "删除错误，反馈编号出现错误!");
+                        return resultMap;
+                    }
+                }
+                break;
+            //彻底删除
+            case 2:
+                //获取要撤销删除的反馈信息的id列表，对其进行状态改变
+                for (int studentId : idList) {
+                    int result = userService.deleteUser(studentId);
+                    if (result <= 0) {
+                        resultMap.put("msg", "删除错误，反馈编号出现错误!");
+                        return resultMap;
+                    }
+                }
+        }
+        resultMap.put("msg", "删除成功!");
+        return resultMap;
+    }
+
 
 }

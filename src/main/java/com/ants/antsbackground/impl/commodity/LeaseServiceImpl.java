@@ -86,4 +86,22 @@ public class LeaseServiceImpl implements LeaseService {
     public Integer countReleaseClassifyLeaseNumber(Map<String,Integer> parameterMap){
         return leaseMapper.countReleaseClassifyLeaseNumber(parameterMap);
     }
+
+    /**
+     * 彻底删除租赁商品的信息
+     * @param goodsId
+     * @return
+     */
+    public Integer deleteLease(Integer goodsId){
+        return leaseMapper.deleteLease(goodsId);
+    }
+
+    /**
+     * 将租赁商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站
+     * @param parameterMap
+     * @return
+     */
+    public Integer updateLease(Map<String,Integer> parameterMap){
+        return leaseMapper.updateLease(parameterMap);
+    }
 }

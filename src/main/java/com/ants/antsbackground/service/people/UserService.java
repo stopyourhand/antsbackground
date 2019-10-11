@@ -41,4 +41,20 @@ public interface UserService {
      * @return
      */
     Integer countUser(Map<String,Integer> parameterMap);
+
+    /**
+     * 彻底删除用户信息
+     *
+     * @param studentId
+     * @return
+     */
+    Integer deleteUser(Integer studentId);
+
+    /**
+     * 将用户信息状态进行更改，即进入回收站 userType 0 正常 1 回收站
+     *
+     * @param parameterMap
+     * @return
+     */
+    Integer updateUser(Map<String, Integer> parameterMap);
 }
