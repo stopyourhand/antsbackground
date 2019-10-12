@@ -34,7 +34,7 @@ public class AdministratorController {
      * @return
      */
     @PostMapping(value = "/login")
-    public Map loginToJudge(@RequestParam(value = "account") int account,
+    public Map login(@RequestParam(value = "account") int account,
                             @RequestParam(value = "passWord") String passWord) {
 
         //保存返回给前端信息的hashMap
@@ -79,6 +79,29 @@ public class AdministratorController {
             return resultMap;
         }
 
+
+    }
+
+    /**
+     * 退出登录功能
+     * @param httpServletRequest
+     * @return
+     */
+    @PostMapping(value = "/exit")
+    public Map exit(HttpServletRequest httpServletRequest) {
+        //保存返回给前端信息的hashMap
+        Map resultMap = new HashMap<>(16);
+
+        //获取当前会话
+        HttpSession session = httpServletRequest.getSession();
+
+        //移除studentId这个session属性，相当于注销状态
+        session.removeAttribute("studentId");
+        //使整个客户端对应的Session失效，里面的所有东西都会被清空，同时也释放了资源。
+//        session.invalidate();
+
+        resultMap.put("judge", true);
+        return resultMap;
 
     }
 

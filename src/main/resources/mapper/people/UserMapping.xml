@@ -41,6 +41,13 @@
         </if>
     </select>
 
+    <!--获取指定时间内，不同用户类型(0:学生 1:教师)的访问次数(用户分析)-->
+    <select id="countUserNumberByType" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM ants_user_base
+              WHERE peopleType = #{peopleType}
+                  AND registTime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
     <!--彻底删除用户信息-->
     <delete id="deleteUser" parameterType="Integer">
         DELETE FROM ants_user_base

@@ -57,4 +57,11 @@ public interface UserService {
      * @return
      */
     Integer updateUser(Map<String, Integer> parameterMap);
+
+    /**
+     * 获取指定时间内，不同用户类型(0:学生 1:教师)的访问次数(用户分析)
+     * @param parameterMap
+     * @return
+     */
+    Integer countUserNumberByType(Map parameterMap);
 }
