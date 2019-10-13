@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.antsbackground.mapper.commodity.IdleMapper">
+    <resultMap id="commodityMap" type="com.ants.antsbackground.dto.CommodityDTO">
+        <id column="goodsId" property="id"/>
+        <result column="goodsName" property="name"/>
+        <result column="goodsPrice" property="price"/>
+        <result column="goodsType" property="goodsType"/>
+        <result column="userName" property="userName"/>
+    </resultMap>
+
+    <resultMap id="auditMap" type="com.ants.antsbackground.dto.AuditDTO">
+        <id column="goodsId" property="id"/>
+        <result column="goodsName" property="name"/>
+        <result column="goodsPrice" property="price"/>
+        <result column="userName" property="userName"/>
+    </resultMap>
+
+    <!--获取在指定时间内(七天)发布闲置的数量-->
+    <select id="countReleaseIdleNumber" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_goods_base`
+              WHERE  uploadTime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!--获取在指定时间内不同分类的闲置商品的数量-->
+    <select id="countReleaseClassifyIdleNumber" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_goods_base`
+              WHERE  goodsClass BETWEEN #{start} AND #{end}
+    </select>
+
+    <!--获取在已经通过审核的闲置的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listAuditedIdleGoods" parameterType="Map" resultMap="auditMap">
+        SELECT goodsId,goodsName,goodsPrice,userName
+              FROM ants_user_base as us ,ants_goods_base as base
+                  WHERE us.studentId = base.goodsBelong
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--获取交易分析的列出不同时间段的发布成功的闲置的商品的信息-->
+    <select id="listIdleAnalysis" parameterType="Map" resultType="com.ants.antsbackground.entity.commodity.IdleGoods">
+        SELECT goodsName,goodsClass,goodsPrice
+              FROM `ants_goods_base`
+                  WHERE uploadTime BETWEEN #{startTime} AND #{endTime}
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--统计审核通过的闲置的商品的数量-->
+    <select id="countAuditedIdleGoods" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_base
+    </select>
+
+    <!--获取在闲置表的所有商品(审核通过,回收站)的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listIdleCommodity" parameterType="Map" resultMap="commodityMap">
+        SELECT goodsId,goodsName,goodsPrice,goodsType,userName
+              FROM ants_user_base as us ,ants_goods_base as idle
+                  WHERE us.studentId = idle.goodsBelong AND goodsType = #{goodsType}
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--统计闲置的商品中通过审核或者正在回收站的商品的数量-->
+    <select id="countIdleCommodity" parameterType="Integer" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_base
+            WHERE goodsType = #{goodsType}
+    </select>
+
+    <!--彻底删除闲置商品的信息-->
+    <delete id="deleteIdle" parameterType="Integer">
+        DELETE FROM ants_goods_base
+              WHERE goodsId = #{goodsId}
+    </delete>
+
+    <!--将闲置商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站 -->
+    <update id="updateIdle" parameterType="Map">
+        UPDATE ants_goods_base
+              SET goodsType = #{goodsType}
+                  WHERE goodsId = #{goodsId}
+    </update>
+
+</mapper>

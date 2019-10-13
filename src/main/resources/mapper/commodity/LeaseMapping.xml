@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.antsbackground.mapper.commodity.LeaseMapper">
+    <resultMap id="commodityMap" type="com.ants.antsbackground.dto.CommodityDTO">
+        <id column="goodsId" property="id"/>
+        <result column="goodsName" property="name"/>
+        <result column="goodsPrice" property="price"/>
+        <result column="goodsType" property="goodsType"/>
+        <result column="userName" property="userName"/>
+    </resultMap>
+
+    <resultMap id="auditMap" type="com.ants.antsbackground.dto.AuditDTO">
+        <id column="goodsId" property="id"/>
+        <result column="goodsName" property="name"/>
+        <result column="goodsPrice" property="price"/>
+        <result column="userName" property="userName"/>
+    </resultMap>
+
+    <!--获取在指定时间内(七天)发布租赁的数量-->
+    <select id="countReleaseLeaseNumber" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_goods_lease`
+              WHERE  uploadTime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!--获取在指定时间内不同分类的租赁商品的数量-->
+    <select id="countReleaseClassifyLeaseNumber" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_goods_lease`
+              WHERE  goodsClass BETWEEN #{start} AND #{end}
+    </select>
+
+    <!--获取在已经通过审核的租赁的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listAuditedLeaseGoods" parameterType="Map" resultMap="auditMap">
+        SELECT goodsId,goodsName,goodsPrice,userName
+              FROM ants_user_base as us ,ants_goods_lease as lease
+                  WHERE us.studentId = lease.goodsBelong
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--获取交易分析的列出不同时间段的发布成功的租赁的商品的信息-->
+    <select id="listLeaseAnalysis" parameterType="Map" resultType="com.ants.antsbackground.entity.commodity.LeaseGoods">
+        SELECT goodsName,goodsClass,goodsPrice
+              FROM `ants_goods_lease`
+                  WHERE uploadTime BETWEEN #{startTime} AND #{endTime}
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--统计审核通过的租赁的商品的数量-->
+    <select id="countAuditedLeaseGoods" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_lease
+    </select>
+
+    <!--获取在租赁表的所有商品(审核通过,回收站)的商品名称,价格,发布类型以及所属卖家信息的列表-->
+    <select id="listLeaseCommodity" parameterType="Map" resultMap="commodityMap">
+        SELECT goodsId,goodsName,goodsPrice,goodsType,userName
+              FROM ants_user_base as us ,ants_goods_lease as lease
+                  WHERE us.studentId = lease.goodsBelong AND goodsType = #{goodsType}
+                      LIMIT #{head},#{length}
+
+    </select>
+
+    <!--统计租赁的商品中通过审核或者正在回收站的商品的数量-->
+    <select id="countLeaseCommodity" parameterType="Integer" resultType="Integer">
+        SELECT COUNT(*) FROM ants_goods_lease
+            WHERE goodsType = #{goodsType}
+    </select>
+
+    <!--彻底删除租赁商品的信息-->
+    <delete id="deleteLease" parameterType="Integer">
+        DELETE FROM ants_goods_lease
+              WHERE goodsId = #{goodsId}
+    </delete>
+
+    <!--将租赁商品状态进行更改，即进入回收站 -> 商品状态: goodsType 0:审核通过 1:回收站 -->
+    <update id="updateLease" parameterType="Map">
+        UPDATE ants_goods_lease
+              SET goodsType = #{goodsType}
+                  WHERE goodsId = #{goodsId}
+    </update>
+
+</mapper>

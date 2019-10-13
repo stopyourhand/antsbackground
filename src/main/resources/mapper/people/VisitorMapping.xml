@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.antsbackground.mapper.people.VisitorMapper">
+    <resultMap id="visitorMap" type="com.ants.antsbackground.entity.people.Visitor">
+        <id column="visitor_id" property="id"/>
+        <result column="visitor_ip" property="ip"/>
+        <result column="userType" property="userType"/>
+        <result column="browse_time" property="browseTime"/>
+    </resultMap>
+
+    <!--获取网站现在的游客总数量，总人数-->
+    <select id="countVisitors" parameterType="Map"  resultType="Integer">
+        SELECT COUNT(*) FROM ants_visitor_base
+        --      judge 为0代表列出所有用户信息，为1代表回收站信息
+        <if test="judge == 1">
+            WHERE userType = #{userType}
+        </if>
+    </select>
+
+    <!--获取所有游客信息或者回收站的用户信息的列表（所有按钮）-->
+    <select id="listVisitors" parameterType="Map" resultMap="visitorMap">
+        SELECT visitor_id,visitor_ip
+        FROM ants_visitor_base
+        --      judge 为0代表列出所有用户信息，为1代表回收站信息
+        <if test="judge == 1">
+            WHERE userType = #{userType}
+        </if>
+
+        LIMIT #{head},#{length}
+    </select>
+
+    <!--彻底删除游客信息-->
+    <delete id="deleteVisitor" parameterType="Integer">
+        DELETE FROM ants_visitor_base
+              WHERE visitor_id = #{visitorId}
+    </delete>
+
+    <!--将游客信息状态进行更改，即进入回收站-->
+    <update id="updateVisitor" parameterType="Map">
+        UPDATE ants_visitor_base
+              SET userType = #{userType}
+                  WHERE visitor_id = #{visitorId}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ants.antsbackground.mapper.sell.SellMapper">
+    <!--获取在指定时间内(七天)不同类型商品的交易数量-->
+    <select id="countSellNumberByCommodity" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_other_sell`
+              WHERE  goodsState = #{goodsState}
+                    AND sellTime BETWEEN #{startTime} AND #{endTime}
+    </select>
+
+    <!--获取所有交易完成的商品的数量-->
+    <select id="countAllSellGoodsNumber" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_other_sell`
+    </select>
+
+    <!--获取交易分析的列出不同时间段的交易完成的商品的信息-->
+    <select id="listSellAnalysis" parameterType="Map" resultType="com.ants.antsbackground.entity.sell.Sell">
+        SELECT goodsName,goodsClass,goodsPrice,goodsState
+              FROM `ants_other_sell`
+                  WHERE sellTime BETWEEN #{startTime} AND #{endTime}
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--获取在指定时间内不同分类的交易完成的商品的数量-->
+    <select id="countReleaseClassifySellNumber" parameterType="Map" resultType="Integer">
+        SELECT COUNT(*) FROM `ants_other_sell`
+              WHERE  goodsClass BETWEEN #{start} AND #{end}
+    </select>
+
+</mapper>

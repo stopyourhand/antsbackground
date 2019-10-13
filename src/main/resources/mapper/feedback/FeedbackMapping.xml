@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ants.antsbackground.mapper.feedback.FeedbackMapper">
-    <!--将用户进行反馈的信息添加到数据库中-->
-    <insert id="insertFeedback" parameterType="com.ants.antsbackground.entity.feedback.Feedback">
-        INSERT INTO ants_management_feedback (fbId, userId, fbContent, fbTime,
-                                             fbSatisfaction, userMobile, userName)
-                                             VALUES(#{fbId}, #{userId},#{fbContent},#{fbTime},
-                                                     #{fbSatisfaction},#{userMobile},#{userName})
 
+    <!--获取用户的反馈列表信息-->
+    <select id="listFeedback" parameterType="Map" resultType="com.ants.antsbackground.entity.feedback.Feedback">
+        SELECT fbId,fbSerial,fbSatisfaction,fbTime
+              FROM ants_management_feedback
+                  LiMIT #{head},#{length}
+    </select>
 
-    </insert>
+    <!--获取回收站里的公告信息-->
+    <select id="listFeedbackRecycle" parameterType="Map" resultType="com.ants.antsbackground.entity.feedback.Feedback">
+        SELECT fbId,fbSerial,fbSatisfaction,fbTime
+              FROM ants_management_feedback
+                  WHERE state = #{state}
+                      LIMIT #{head},#{length}
+    </select>
+
+    <!--获取用户反馈信息的数量-->
+    <select id="countFeedbackNumber" parameterType="Integer" resultType="Integer">
+        SELECT COUNT(*) FROM ants_management_feedback
+              WHERE state = #{state}
+    </select>
+
+    <!--彻底删除用户反馈信息-->
+    <delete id="deleteFeedback" parameterType="Integer">
+        DELETE FROM ants_management_feedback
+              WHERE fbId = #{fbId}
+    </delete>
+
+    <!--将反馈信息状态进行更改，即进入回收站-->
+    <update id="updateFeedback" parameterType="Map">
+        UPDATE ants_management_feedback
+              SET state = #{state}
+                  WHERE fbId = #{fbId}
+    </update>
 
 </mapper>
