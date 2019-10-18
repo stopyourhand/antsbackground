@@ -5,6 +5,9 @@ import com.ants.antsbackground.constant.PageConsts;
 import com.ants.antsbackground.dto.feedback.DecorationDTO;
 import com.ants.antsbackground.entity.announcement.Announcement;
 import com.ants.antsbackground.service.announcement.AnnouncementService;
+import com.ants.antsbackground.thread.announcement.InsertAnnouncementThread;
+import com.ants.antsbackground.thread.announcement.UpdateAnnouncementThread;
+import com.ants.antsbackground.util.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +16,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 /**
  * 对用户反馈进行业务操作
@@ -122,6 +126,59 @@ public class AnnouncementController {
 
 
     /**
+     * 增加新的公告
+     *
+     * @param title
+     * @param content
+     */
+    @RequestMapping(value = "/insert", method = RequestMethod.POST)
+    public Map insertAnnouncement(@RequestParam(value = "title") String title,
+                                  @RequestParam(value = "content") String content) {
+        //用来保存返回给前端数据的map
+        Map resultMap = new HashMap();
+        //存放参数信息
+        Announcement announcement = new Announcement();
+
+        if (title == null || "".equals(title)) {
+            resultMap.put("msg", "标题不可以为空！");
+            return resultMap;
+        }
+        announcement.setAnnTitle(title);
+
+        if (content == null || "".equals(content)) {
+            resultMap.put("msg", "内容不可以为空！");
+            return resultMap;
+        }
+        announcement.setAnnContent(content);
+
+        //获取系统时间
+        Date date = new Date();
+        //设置时间的输出格式
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //获取公告发布时间
+        String annReleaseTime = simpleDateFormat.format(date);
+        announcement.setAnnTime(annReleaseTime);
+        //0为正常 1为回收站
+        announcement.setState(0);
+
+        //获取线程池
+        ExecutorService executorService = (ExecutorService)SpringUtil.getBean("ExecutorService");
+        //将对象传入线程中并且获取参数值执行添加方法
+        InsertAnnouncementThread announcementThread = new InsertAnnouncementThread(announcement);
+        executorService.execute(announcementThread);
+
+//        int result = announcementService.insertAnnouncement(announcement);
+//        //判断是否添加一条新的公告成功
+//        if (result <= 0) {
+//            resultMap.put("msg", "添加新的公告失败!");
+//            return resultMap;
+//        }
+        resultMap.put("msg", "插入信息成功");
+        return resultMap;
+    }
+
+
+    /**
      * 更改公告操作
      *
      * @param annId
@@ -166,14 +223,19 @@ public class AnnouncementController {
         //获取修改公告的常规时间
         String annTime = simpleDateFormat.format(date);
         parameterMap.put("annTime", annTime);
+        //获取线程池
+        ExecutorService executorService = (ExecutorService)SpringUtil.getBean("ExecutorService");
+        //将parameterMap对象传入线程中并且获取参数值执行添加方法
+        UpdateAnnouncementThread updateAnnouncementThread = new UpdateAnnouncementThread(parameterMap);
+        executorService.execute(updateAnnouncementThread);
 
-        int result = announcementService.updateAnnouncement(parameterMap);
-        if (result <= 0) {
-            resultMap.put("msg", "更改公告失败！");
-            return resultMap;
-        }
+//        int result = announcementService.updateAnnouncement(parameterMap);
+//        if (result <= 0) {
+//            resultMap.put("msg", "更改公告失败！");
+//            return resultMap;
+//        }
 
-        resultMap.put("msg", "修改成功!");
+        resultMap.put("msg", "修改成功");
         return resultMap;
     }
 
@@ -251,50 +313,6 @@ public class AnnouncementController {
         return resultMap;
     }
 
-    /**
-     * 增加新的公告
-     *
-     * @param title
-     * @param content
-     */
-    @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public Map insertAnnouncement(@RequestParam(value = "title") String title,
-                                  @RequestParam(value = "content") String content) {
-        //用来保存返回给前端数据的map
-        Map resultMap = new HashMap();
-        //存放参数信息
-        Announcement announcement = new Announcement();
-        System.out.println("================");
-        System.out.println("Announcement ==== title:" + title +" content:" + content);
 
-        if (title == null || "".equals(title)) {
-            resultMap.put("msg", "标题不可以为空！");
-            return resultMap;
-        }
-        announcement.setAnnTitle(title);
-
-        if (content == null || "".equals(content)) {
-            resultMap.put("msg", "内容不可以为空！");
-            return resultMap;
-        }
-        announcement.setAnnContent(content);
-
-        //获取系统时间
-        Date date = new Date();
-        //设置时间的输出格式
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        //获取公告发布时间
-        String annReleaseTime = simpleDateFormat.format(date);
-        announcement.setAnnTime(annReleaseTime);
-
-        int result = announcementService.insertAnnouncement(announcement);
-        //判断是否添加一条新的公告成功
-        if (result <= 0) {
-            resultMap.put("msg", "添加新的公告失败!");
-            return resultMap;
-        }
-        resultMap.put("msg", "新增公告成功!");
-        return resultMap;
-    }
 
 }
