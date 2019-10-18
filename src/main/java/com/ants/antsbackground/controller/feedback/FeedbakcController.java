@@ -2,10 +2,8 @@ package com.ants.antsbackground.controller.feedback;
 
 
 import com.ants.antsbackground.constant.PageConsts;
-import com.ants.antsbackground.dto.AnnouncementDTO;
-import com.ants.antsbackground.dto.DecorationDTO;
-import com.ants.antsbackground.dto.FeedbackDTO;
-import com.ants.antsbackground.entity.feedback.Feedback;
+import com.ants.antsbackground.dto.feedback.DecorationDTO;
+import com.ants.antsbackground.dto.feedback.FeedbackDTO;
 import com.ants.antsbackground.service.feedback.FeedbackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -69,7 +67,6 @@ public class FeedbakcController {
         }
 
         resultMap.put("allPage", allPage);
-
         return resultMap;
     }
 
@@ -92,7 +89,6 @@ public class FeedbakcController {
         //用来保存listFeedbackRecycle方法中的head和length参数
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
-
         //获取用户反馈信息的数量,设置state为1，表示为回收站的反馈信息
         int state = 1;
         int countFeedbackNumber = feedbackService.countFeedbackNumber(state);
@@ -106,8 +102,6 @@ public class FeedbakcController {
 
         resultMap.put("allPage", allPage);
 
-
-
         //获取页面数开始的数据信息在数据库的坐标信息
         int head = (currentPage - 1) * PageConsts.FEEDBACK_PAGE_NUMBER;
 
@@ -119,8 +113,6 @@ public class FeedbakcController {
         //获取符合条件的返回列表的数据
         List<FeedbackDTO> feedbackList = feedbackService.listFeedbackRecycle(parameterMap);
         resultMap.put("feedbackList", feedbackList);
-
-
         return resultMap;
     }
 
@@ -136,21 +128,22 @@ public class FeedbakcController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Map deleteFeedback(@RequestParam(value = "type") Integer type,
-                              @RequestParam(value = "idList[]") int[] idList) {
+                              @RequestParam(value = "idList") List<Integer> idList) {
         //存放返回给前端数据的一个map
         Map resultMap = new HashMap(16);
         //存放对数据库的操作方法的参数的值
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
+        //判断格式是否正确
+        if (idList.size() <= 0) {
+            resultMap.put("msg", "请选择要删除的反馈信息！");
+            return resultMap;
+        }
         if (type < 0 || type > 2) {
             resultMap.put("msg", "删除类型错误！");
             return resultMap;
         }
 
-        if (idList.length <= 0) {
-            resultMap.put("msg", "请选择要删除的反馈信息！");
-            return resultMap;
-        }
 
         //对删除的操作类型进下判断
         switch (type) {
@@ -194,6 +187,5 @@ public class FeedbakcController {
         resultMap.put("msg", "删除成功!");
         return resultMap;
     }
-
 
 }

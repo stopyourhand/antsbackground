@@ -1,8 +1,8 @@
 package com.ants.antsbackground.controller.commodity;
 
 import com.ants.antsbackground.constant.PageConsts;
-import com.ants.antsbackground.dto.AuditDTO;
-import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.dto.commodity.AuditDTO;
+import com.ants.antsbackground.dto.commodity.CommodityDTO;
 import com.ants.antsbackground.service.commodity.GiveService;
 import com.ants.antsbackground.service.commodity.IdleService;
 import com.ants.antsbackground.service.commodity.LeaseService;
@@ -154,7 +154,6 @@ public class GoodsController {
             default:
                 break;
         }
-
         return resultMap;
     }
 
@@ -177,7 +176,6 @@ public class GoodsController {
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
         //判断数据格式是否正确
-
         if (goodsType < 0 || goodsType > 3) {
             resultMap.put("msg", "商品类型数据传输错误!");
             return resultMap;
@@ -187,7 +185,7 @@ public class GoodsController {
             return resultMap;
         }
 
-
+        //设置每个页面是显示条数
         int length = PageConsts.GOODS_MANAGEMENT_PAGE_NUMBER;
         int head = (currentPage - 1) * length;
         //将从数据库第几条下标获取数据的参数的值传入parameterMap
@@ -198,7 +196,7 @@ public class GoodsController {
 
         //数据总页数
         int allPage = 0;
-
+        //商品审核类型 0:闲置 1:赠送 2:租赁 3:寻求
         switch (goodsType) {
             //所有闲置
             case 0:
@@ -521,14 +519,19 @@ public class GoodsController {
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Map deleteGoods(@RequestParam(value = "type") Integer type,
                            @RequestParam(value = "goodsType") Integer goodsType,
-                           @RequestParam(value = "idList[]") int[] idList) {
+                           @RequestParam(value = "idList") List<Integer> idList) {
         //存放返回给前端数据的一个map
         Map resultMap = new HashMap(16);
         //存放对数据库的操作方法的参数的值
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
+        //判断前端参数是否符合格格式
         if (type < 0 || type > 2) {
             resultMap.put("msg", "删除类型错误！");
+            return resultMap;
+        }
+        if (idList.size() <= 0) {
+            resultMap.put("msg", "请选择要删除的反馈信息！");
             return resultMap;
         }
         if (goodsType < 0) {
@@ -536,10 +539,6 @@ public class GoodsController {
             return resultMap;
         }
 
-        if (idList.length <= 0) {
-            resultMap.put("msg", "请选择要删除的反馈信息！");
-            return resultMap;
-        }
 
         //设置压迫删除的商品类型 0:闲置 1:赠送 2:租赁 3:寻求
         parameterMap.put("goodsType", goodsType);
@@ -658,6 +657,5 @@ public class GoodsController {
         resultMap.put("msg", "删除成功!");
         return resultMap;
     }
-
 
 }

@@ -1,9 +1,7 @@
 package com.ants.antsbackground.impl.people;
 
-import com.ants.antsbackground.dto.UserDTO;
-import com.ants.antsbackground.mapper.people.AdministratorMapper;
+import com.ants.antsbackground.dto.people.UserDTO;
 import com.ants.antsbackground.mapper.people.UserMapper;
-import com.ants.antsbackground.service.people.AdministratorService;
 import com.ants.antsbackground.service.people.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

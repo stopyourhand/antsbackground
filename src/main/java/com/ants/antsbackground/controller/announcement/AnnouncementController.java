@@ -2,14 +2,11 @@ package com.ants.antsbackground.controller.announcement;
 
 
 import com.ants.antsbackground.constant.PageConsts;
-import com.ants.antsbackground.dto.DecorationDTO;
+import com.ants.antsbackground.dto.feedback.DecorationDTO;
 import com.ants.antsbackground.entity.announcement.Announcement;
 import com.ants.antsbackground.service.announcement.AnnouncementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,15 +43,20 @@ public class AnnouncementController {
 
         //获取用户反馈信息的数量,state为0，表示公告为正常状态，未被回收进回收站
         int state = 0;
+        //正常状态的公告数量
         int countAnnouncementNumber = announcementService.countAnnouncementNumber(state);
+        //回收站状态的公告数量
+        state = 1;
+        int countAnnouncementRecycleNumber = announcementService.countAnnouncementNumber(state);
+
+        int allAnnouncementNumber = countAnnouncementNumber + countAnnouncementRecycleNumber;
 
         //计算反馈列表的总页数
-        int allPage = (countAnnouncementNumber / PageConsts.ANNOUNCEMENT_PAGE_NUMBER) + 1;
+        int allPage = (allAnnouncementNumber / PageConsts.ANNOUNCEMENT_PAGE_NUMBER) + 1;
         if (allPage <= 0) {
             resultMap.put("msg", "页面数传输有误!");
             return resultMap;
         }
-
         resultMap.put("allPage", allPage);
 
         if (currentPage <= 0) {
@@ -72,8 +74,6 @@ public class AnnouncementController {
         //获取符合条件的返回列表的数据
         List<DecorationDTO> announcementList = announcementService.listAnnouncement(parameterMap);
         resultMap.put("announcementList", announcementList);
-
-
         return resultMap;
     }
 
@@ -104,9 +104,7 @@ public class AnnouncementController {
             resultMap.put("msg", "页面数传输有误!");
             return resultMap;
         }
-
         resultMap.put("allPage", allPage);
-
 
         //获取页面数开始的数据信息在数据库的坐标信息
         int head = (currentPage - 1) * PageConsts.ANNOUNCEMENT_PAGE_NUMBER;
@@ -119,8 +117,6 @@ public class AnnouncementController {
         //获取符合条件的返回列表的数据
         List<DecorationDTO> announcementList = announcementService.listAnnouncementRecycle(parameterMap);
         resultMap.put("announcementList", announcementList);
-
-
         return resultMap;
     }
 
@@ -178,7 +174,6 @@ public class AnnouncementController {
         }
 
         resultMap.put("msg", "修改成功!");
-
         return resultMap;
     }
 
@@ -194,34 +189,34 @@ public class AnnouncementController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Map deleteFeedback(@RequestParam(value = "type") Integer type,
-                              @RequestParam(value = "idList[]") int[] idList) {
+                              @RequestParam(value = "idList") List<Integer> idList) {
         //存放返回给前端数据的一个map
         Map resultMap = new HashMap(16);
         //存放对数据库的操作方法的参数的值
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
-
         //判断id列表是否为空，若为空即代表没选中要删除的公告信息
-        if (idList.length <= 0) {
+        if (idList.size() <= 0) {
             resultMap.put("msg", "请选择要删除的公告信息！");
             return resultMap;
         }
-
         //判断删除操作是否是删除，撤销删除还是彻底删除
         if (type < 0 || type > 2) {
             resultMap.put("msg", "删除类型错误！");
             return resultMap;
         }
-
+        System.out.println("type:" + type);
         //对删除的操作类型进下判断
         switch (type) {
             //删除操作，即将用户反馈信息放进回收站
             case 0:
+                System.out.println("删除操作");
                 //获取要删除的反馈信息的id列表，对其进行状态改变，即弄进回收站里面
                 for (int annId : idList) {
                     parameterMap.put("annId", annId);
                     parameterMap.put("state", 1);
-                    int result = announcementService.updateAnnouncement(parameterMap);
+                    System.out.println("anmId: " + annId);
+                    int result = announcementService.updateAnnouncementState(parameterMap);
                     if (result <= 0) {
                         resultMap.put("msg", "删除错误，公告编号出现错误!");
                         return resultMap;
@@ -234,7 +229,7 @@ public class AnnouncementController {
                 for (int annId : idList) {
                     parameterMap.put("annId", annId);
                     parameterMap.put("state", 0);
-                    int result = announcementService.updateAnnouncement(parameterMap);
+                    int result = announcementService.updateAnnouncementState(parameterMap);
                     if (result <= 0) {
                         resultMap.put("msg", "删除错误，反馈编号出现错误!");
                         return resultMap;
@@ -259,30 +254,30 @@ public class AnnouncementController {
     /**
      * 增加新的公告
      *
-     * @param annTitle
-     * @param annContent
-     * @return
+     * @param title
+     * @param content
      */
     @RequestMapping(value = "/insert", method = RequestMethod.POST)
-    public Map insertAnnouncement(@RequestParam(value = "title") String annTitle,
-                                  @RequestParam(value = "content") String annContent) {
+    public Map insertAnnouncement(@RequestParam(value = "title") String title,
+                                  @RequestParam(value = "content") String content) {
         //用来保存返回给前端数据的map
         Map resultMap = new HashMap();
-
         //存放参数信息
         Announcement announcement = new Announcement();
+        System.out.println("================");
+        System.out.println("Announcement ==== title:" + title +" content:" + content);
 
-        if (annTitle == null || "".equals(annTitle)) {
+        if (title == null || "".equals(title)) {
             resultMap.put("msg", "标题不可以为空！");
             return resultMap;
         }
-        announcement.setAnnTitle(annTitle);
+        announcement.setAnnTitle(title);
 
-        if (annContent == null || "".equals(annContent)) {
+        if (content == null || "".equals(content)) {
             resultMap.put("msg", "内容不可以为空！");
             return resultMap;
         }
-        announcement.setAnnContent(annContent);
+        announcement.setAnnContent(content);
 
         //获取系统时间
         Date date = new Date();
@@ -300,8 +295,6 @@ public class AnnouncementController {
         }
         resultMap.put("msg", "新增公告成功!");
         return resultMap;
-
     }
-
 
 }

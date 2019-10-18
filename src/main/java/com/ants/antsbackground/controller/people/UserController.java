@@ -2,16 +2,13 @@ package com.ants.antsbackground.controller.people;
 
 
 import com.ants.antsbackground.constant.PageConsts;
-import com.ants.antsbackground.dto.UserDTO;
-import com.ants.antsbackground.service.people.AdministratorService;
+import com.ants.antsbackground.dto.people.UserDTO;
 import com.ants.antsbackground.service.people.UserService;
-import com.ants.antsbackground.util.InterfaceAnalysisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -138,7 +135,7 @@ public class UserController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Map deleteUser(@RequestParam(value = "type") Integer type,
-                          @RequestParam(value = "idList[]") int[] idList) {
+                          @RequestParam(value = "idList") List<Integer> idList) {
         //存放返回给前端数据的一个map
         Map resultMap = new HashMap(16);
 
@@ -147,19 +144,22 @@ public class UserController {
             return resultMap;
         }
 
-        if (idList.length <= 0) {
+        if (idList.size() <= 0) {
             resultMap.put("msg", "请选择要删除的反馈信息！");
             return resultMap;
         }
 
         //存放对数据库的操作方法的参数的值
         Map<String, Integer> parameterMap = new HashMap<>(16);
+        Iterator iterator = null;
         //对删除的操作类型进下判断
         switch (type) {
             //删除操作，即将用户信息放进回收站
             case 0:
                 //获取要删除的反馈信息的id列表，对其进行状态改变，即弄进回收站里面
-                for (int studentId : idList) {
+                iterator = idList.iterator();
+                while (iterator.hasNext()){
+                    Integer studentId = (Integer)iterator.next();
                     parameterMap.put("studentId", studentId);
                     parameterMap.put("userType", 1);
                     int result = userService.updateUser(parameterMap);
@@ -172,7 +172,9 @@ public class UserController {
             //撤销删除操作
             case 1:
                 //获取要撤销删除的用户信息的id列表，对其进行状态改变
-                for (int studentId : idList) {
+                iterator = idList.iterator();
+                while (iterator.hasNext()){
+                    Integer studentId = (Integer)iterator.next();
                     parameterMap.put("studentId", studentId);
                     parameterMap.put("userType", 0);
                     int result = userService.updateUser(parameterMap);
@@ -185,17 +187,18 @@ public class UserController {
             //彻底删除
             case 2:
                 //获取要撤销删除的反馈信息的id列表，对其进行状态改变
-                for (int studentId : idList) {
+                iterator = idList.iterator();
+                while (iterator.hasNext()){
+                    Integer studentId = (Integer)iterator.next();
                     int result = userService.deleteUser(studentId);
                     if (result <= 0) {
                         resultMap.put("msg", "删除错误，反馈编号出现错误!");
                         return resultMap;
                     }
                 }
+                break;
         }
         resultMap.put("msg", "删除成功!");
         return resultMap;
     }
-
-
 }

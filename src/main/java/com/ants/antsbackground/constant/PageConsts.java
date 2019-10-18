@@ -19,7 +19,9 @@ public class PageConsts {
     public final static Integer USER_MANAGEMENT_PAGE_NUMBER = 8;
     /** 游客管理管理列表一个页面有8条数据 */
     public final static Integer VISITOR_MANAGEMENT_PAGE_NUMBER = 8;
-    /** 访问统计管理列表一个页面有8条数据 */
-    public final static Integer ANALYSIS_MANAGEMENT_PAGE_NUMBER = 8;
+    /** 访问统计管理列表一个页面有10条数据 */
+    public final static Integer ANALYSIS_MANAGEMENT_PAGE_NUMBER = 10;
+    /** 流量分析和用户分析搜索框中最多显示的时间个数 */
+    public final static Integer ANALYSIS_DAY_NUMBER = 30;
 
 }

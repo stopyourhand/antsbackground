@@ -1,8 +1,7 @@
 package com.ants.antsbackground.service.feedback;
 
-import com.ants.antsbackground.dto.DecorationDTO;
-import com.ants.antsbackground.dto.FeedbackDTO;
-import com.ants.antsbackground.entity.feedback.Feedback;
+import com.ants.antsbackground.dto.feedback.DecorationDTO;
+import com.ants.antsbackground.dto.feedback.FeedbackDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

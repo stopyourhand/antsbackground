@@ -1,4 +1,4 @@
-package com.ants.antsbackground.dto;
+package com.ants.antsbackground.dto.analysis;
 
 import lombok.Data;
 

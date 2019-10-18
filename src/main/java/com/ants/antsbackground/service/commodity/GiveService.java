@@ -1,7 +1,7 @@
 package com.ants.antsbackground.service.commodity;
 
-import com.ants.antsbackground.dto.AuditDTO;
-import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.dto.commodity.AuditDTO;
+import com.ants.antsbackground.dto.commodity.CommodityDTO;
 import com.ants.antsbackground.entity.commodity.GiveGoods;
 import org.springframework.stereotype.Service;
 

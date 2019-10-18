@@ -1,7 +1,7 @@
 package com.ants.antsbackground.controller.commodity;
 
 import com.ants.antsbackground.constant.PageConsts;
-import com.ants.antsbackground.dto.AuditDTO;
+import com.ants.antsbackground.dto.commodity.AuditDTO;
 import com.ants.antsbackground.service.commodity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +62,7 @@ public class AuditController {
         //用来保存数据库方法参数的hashMap
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
+        //设置商品审核类型 0:闲置 1:赠送 2:租赁 3:寻求
         parameterMap.put("goodsType", goodsType);
 
         //获取数据库Limit中从第几个数据开始获取数据
@@ -72,7 +73,6 @@ public class AuditController {
         }
         parameterMap.put("head", head);
         parameterMap.put("length", PageConsts.AUDIT_PAGE_NUMBER);
-
 
         //获取审核商品中指定类型的(闲置,租赁,赠送,寻求)的商品的信息
         List<AuditDTO> auditDTOList = auditService.listAuditCommodity(parameterMap);
@@ -119,10 +119,11 @@ public class AuditController {
             return resultMap;
         }
 
-        //
+        //商品审核类型 0:闲置 1:赠送 2:租赁 3:寻求
         parameterMap.put("goodsType", goodsType);
         //0代表待审核，1代表回收站
         parameterMap.put("goodsState", 0);
+
         //获取数据库Limit中从第几个数据开始获取数据
         int head = (currentPage - 1) * PageConsts.AUDIT_PAGE_NUMBER;
         if (head < 0) {
@@ -131,7 +132,6 @@ public class AuditController {
         }
         parameterMap.put("length", PageConsts.AUDIT_PAGE_NUMBER);
         parameterMap.put("head", head);
-
 
         //获取审核商品中指定类型的(闲置,租赁,赠送,寻求)的商品的信息
         List<AuditDTO> auditDTOList = auditService.listCommodityByAudit(parameterMap);
@@ -151,8 +151,6 @@ public class AuditController {
             return resultMap;
         }
         resultMap.put("allPage", allPage);
-
-
         return resultMap;
     }
 
@@ -180,7 +178,6 @@ public class AuditController {
         }
         //用来保存数据库方法参数的hashMap
         Map<String, Integer> parameterMap = new HashMap<>(16);
-
 
         //获取数据库Limit中从第几个数据开始获取数据
         int head = (currentPage - 1) * PageConsts.AUDIT_PAGE_NUMBER;
@@ -274,7 +271,6 @@ public class AuditController {
                 break;
 
         }
-
         return resultMap;
     }
 
@@ -295,7 +291,6 @@ public class AuditController {
             resultMap.put("msg", "页面传输格式错误,请重新传入!");
             return resultMap;
         }
-
         if (goodsType < 0 || goodsType > 3) {
             resultMap.put("msg", "商品类型格式错误,请重新传入!");
             return resultMap;
@@ -304,6 +299,7 @@ public class AuditController {
         //用来保存数据库方法参数的hashMap
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
+        //商品审核类型 0:闲置 1:赠送 2:租赁 3:寻求
         parameterMap.put("goodsType", goodsType);
 
         //获取数据库Limit中从第几个数据开始获取数据
@@ -335,7 +331,6 @@ public class AuditController {
             return resultMap;
         }
         resultMap.put("allPage", allPage);
-
         return resultMap;
     }
 
@@ -353,22 +348,22 @@ public class AuditController {
     @RequestMapping(value = "/check", method = RequestMethod.PATCH)
     public Map checkAudit(@RequestParam(value = "type") Integer type,
                           @RequestParam(value = "goodsType") Integer goodsType,
-                          @RequestParam(value = "idList[]") int[] idList) {
+                          @RequestParam(value = "idList") List<Integer> idList) {
         //存放返回给前端数据的一个map
         Map resultMap = new HashMap(16);
         //存放对数据库的操作方法的参数的值
         Map<String, Integer> parameterMap = new HashMap<>(16);
         //判断数据是否传输正确
-        if (idList.length <= 0) {
-            resultMap.put("msg", "请选择要删除的反馈信息！");
-            return resultMap;
-        }
         if (goodsType < 0) {
             resultMap.put("msg", "商品类型传输错误！");
             return resultMap;
         }
         if (type < 0 || type > 2) {
             resultMap.put("msg", "删除类型错误！");
+            return resultMap;
+        }
+        if (idList.size() <= 0) {
+            resultMap.put("msg", "请选择要删除的反馈信息！");
             return resultMap;
         }
 
@@ -397,6 +392,7 @@ public class AuditController {
                     parameterMap.put("goodsState", 0);
                     int result = auditService.updateAudit(parameterMap);
                     if (result <= 0) {
+                        resultMap.put("judge", false);
                         resultMap.put("msg", "删除错误，反馈编号出现错误!");
                         return resultMap;
                     }
@@ -404,17 +400,10 @@ public class AuditController {
                 break;
             //警告
             case 2:
-//                //获取要撤销删除的反馈信息的id列表，对其进行状态改变
-//                for (int goodsId : idList) {
-//                    int result = auditService.deleteAudit(goodsId);
-//                    if (result <= 0) {
-//                        resultMap.put("msg", "删除错误，反馈编号出现错误!");
-//                        return resultMap;
-//                    }
-//                }
                 //警告操作
         }
-        resultMap.put("msg", "删除成功!");
+        resultMap.put("judge", true);
+        resultMap.put("msg", "商品审核通过!");
         return resultMap;
     }
 
@@ -433,12 +422,13 @@ public class AuditController {
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Map deleteAudit(@RequestParam(value = "type") Integer type,
                            @RequestParam(value = "goodsType") Integer goodsType,
-                           @RequestParam(value = "idList[]") int[] idList) {
+                           @RequestParam(value = "idList") List<Integer> idList) {
         //存放返回给前端数据的一个map
         Map resultMap = new HashMap(16);
         //存放对数据库的操作方法的参数的值
         Map<String, Integer> parameterMap = new HashMap<>(16);
 
+        //判断参数格式是否正确
         if (type < 0 || type > 2) {
             resultMap.put("msg", "删除类型错误！");
             return resultMap;
@@ -447,8 +437,7 @@ public class AuditController {
             resultMap.put("msg", "商品类型传输错误！");
             return resultMap;
         }
-
-        if (idList.length <= 0) {
+        if (idList.size() <= 0) {
             resultMap.put("msg", "请选择要删除的反馈信息！");
             return resultMap;
         }
@@ -497,6 +486,5 @@ public class AuditController {
         resultMap.put("msg", "删除成功!");
         return resultMap;
     }
-
 
 }

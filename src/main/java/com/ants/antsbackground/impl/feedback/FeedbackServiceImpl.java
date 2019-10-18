@@ -1,7 +1,7 @@
 package com.ants.antsbackground.impl.feedback;
 
-import com.ants.antsbackground.dto.DecorationDTO;
-import com.ants.antsbackground.dto.FeedbackDTO;
+import com.ants.antsbackground.dto.feedback.DecorationDTO;
+import com.ants.antsbackground.dto.feedback.FeedbackDTO;
 import com.ants.antsbackground.entity.feedback.Feedback;
 import com.ants.antsbackground.mapper.feedback.FeedbackMapper;
 import com.ants.antsbackground.service.feedback.FeedbackService;
