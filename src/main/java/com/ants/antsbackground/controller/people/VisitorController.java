@@ -2,7 +2,7 @@ package com.ants.antsbackground.controller.people;
 
 
 import com.ants.antsbackground.constant.PageConsts;
-import com.ants.antsbackground.dto.VisitorDTO;
+import com.ants.antsbackground.dto.people.VisitorDTO;
 import com.ants.antsbackground.service.people.VisitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +68,6 @@ public class VisitorController {
         //获取所有用户的数量的总页数
         allPage = (userNumber / PageConsts.VISITOR_MANAGEMENT_PAGE_NUMBER) + 1;
         resultMap.put("allPage", allPage);
-
         return resultMap;
     }
 
@@ -96,8 +95,6 @@ public class VisitorController {
         parameterMap.put("head", head);
         parameterMap.put("length", PageConsts.VISITOR_MANAGEMENT_PAGE_NUMBER);
 
-
-
         //获取数据库中回收站用户的数据信息
         parameterMap.put("judge", 1);
         //获取回收站用户
@@ -119,7 +116,6 @@ public class VisitorController {
             return resultMap;
         }
         resultMap.put("allPage", allPage);
-
         return resultMap;
     }
 
@@ -135,7 +131,7 @@ public class VisitorController {
      */
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public Map deleteFeedback(@RequestParam(value = "type") Integer type,
-                              @RequestParam(value = "idList[]") int[] idList) {
+                              @RequestParam(value = "idList") List<Integer> idList) {
         //存放返回给前端数据的一个map
         Map resultMap = new HashMap(16);
         //存放对数据库的操作方法的参数的值
@@ -146,7 +142,7 @@ public class VisitorController {
             return resultMap;
         }
 
-        if (idList.length <= 0) {
+        if (idList.size() <= 0) {
             resultMap.put("msg", "请选择要删除的反馈信息！");
             return resultMap;
         }
@@ -193,6 +189,5 @@ public class VisitorController {
         resultMap.put("msg", "删除成功!");
         return resultMap;
     }
-
 
 }

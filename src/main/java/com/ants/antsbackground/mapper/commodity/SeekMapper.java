@@ -1,8 +1,7 @@
 package com.ants.antsbackground.mapper.commodity;
 
-import com.ants.antsbackground.dto.AuditDTO;
-import com.ants.antsbackground.dto.CommodityDTO;
-import com.ants.antsbackground.entity.commodity.LeaseGoods;
+import com.ants.antsbackground.dto.commodity.AuditDTO;
+import com.ants.antsbackground.dto.commodity.CommodityDTO;
 import com.ants.antsbackground.entity.commodity.SeekGoods;
 import org.apache.ibatis.annotations.Mapper;
 

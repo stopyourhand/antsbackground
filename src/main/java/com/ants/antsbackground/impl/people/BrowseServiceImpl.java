@@ -1,16 +1,10 @@
 package com.ants.antsbackground.impl.people;
 
-import com.ants.antsbackground.dto.VisitorDTO;
-import com.ants.antsbackground.entity.people.Visitor;
 import com.ants.antsbackground.mapper.people.BrowseMapper;
-import com.ants.antsbackground.mapper.people.VisitorMapper;
 import com.ants.antsbackground.service.people.BrowseService;
-import com.ants.antsbackground.service.people.VisitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**

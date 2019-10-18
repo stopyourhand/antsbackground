@@ -1,11 +1,10 @@
 package com.ants.antsbackground.impl.commodity;
 
-import com.ants.antsbackground.dto.AuditDTO;
-import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.dto.commodity.AuditDTO;
+import com.ants.antsbackground.dto.commodity.CommodityDTO;
 import com.ants.antsbackground.entity.commodity.GiveGoods;
 import com.ants.antsbackground.mapper.commodity.GiveMapper;
 import com.ants.antsbackground.service.commodity.GiveService;
-import com.ants.antsbackground.service.commodity.IdleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

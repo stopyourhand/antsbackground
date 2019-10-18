@@ -1,6 +1,7 @@
 package com.ants.antsbackground.controller.analysis;
 
-import com.ants.antsbackground.dto.BrowseDTO;
+import com.ants.antsbackground.constant.PageConsts;
+import com.ants.antsbackground.dto.analysis.BrowseDTO;
 import com.ants.antsbackground.service.people.BrowseService;
 import com.ants.antsbackground.service.people.UserService;
 import com.ants.antsbackground.util.CountDateUtil;
@@ -42,6 +43,8 @@ public class PeopleAnalysisController {
     public Map trafficAnalysis(@RequestParam(value = "time") String time) {
         //用来保存返回给前端数据的hashMap
         Map resultMap = new LinkedHashMap(16);
+        //声明保存最后结果的列表，保存hashMap
+        List resultList = new LinkedList();
         //判断前端参数的值是否符合要求
         if (time == null || "".equals(time)) {
             resultMap.put("msg", "页面数传输有误!");
@@ -53,48 +56,41 @@ public class PeopleAnalysisController {
         /**
          * 下面是流量分析的统计
          */
+        //声明开始时间和结束时间变量
         String endTime;
         String startTime;
-        Date nowDate;
-        SimpleDateFormat simpleDateFormat;
+        //声明设置时间格式的对象
         List<String> timeList = new LinkedList<>();
         //声明参数参数的对象
         BrowseDTO browseDTO = null;
         switch (time) {
             //获取今天的交易统计量
             case "0":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                endTime = simpleDateFormat.format(nowDate);
-
                 //拼接字符串，对时间进行处理
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(endTime);
-                stringBuilder.append(" HH:00:00");
+                stringBuilder.append("HH时");
                 for (int i = 0; i < 24; i++) {
-                    String Time ;
-                    if (i < 10 ) {
-                        stringBuilder.replace(11, 13, "0" + i);
+                    String Time;
+                    if (i < 10) {
+                        stringBuilder.replace(0, 2, "0" + i);
                         String start = stringBuilder.toString();
                         Time = start;
-                        if (i + 1 == 10){
-                            stringBuilder.replace(11, 13, "" + (i + 1));
-                        }else {
-                            stringBuilder.replace(11, 13, "0" + (i + 1));
+                        if (i + 1 == 10) {
+                            stringBuilder.replace(0, 2, "" + (i + 1));
+                        } else {
+                            stringBuilder.replace(0, 2, "0" + (i + 1));
 
                         }
-
                         String end = stringBuilder.toString();
 
                         //设置用户查看数据的开始时间和结束时间
                         parameterMap.put("endTime", end);
                         parameterMap.put("startTime", start);
                     } else {
-                        stringBuilder.replace(11, 13, String.valueOf(i));
+                        stringBuilder.replace(0, 2, String.valueOf(i));
                         String start = stringBuilder.toString();
                         Time = start;
-                        stringBuilder.replace(11, 13, String.valueOf(i + 1));
+                        stringBuilder.replace(0, 2, String.valueOf(i + 1));
                         String end = stringBuilder.toString();
 
                         //设置用户查看数据的开始时间和结束时间
@@ -113,19 +109,23 @@ public class PeopleAnalysisController {
                     parameterMap.put("peopleType", 2);
                     int visitorNumber = browseService.countBrowseNumber(parameterMap);
                     browseDTO.setVisitorNumber(visitorNumber);
-                    resultMap.put(Time, browseDTO);
 
                     //获取教师最近指定天数的登录访问次数
                     parameterMap.put("peopleType", 1);
                     int teacherNumber = browseService.countBrowseNumber(parameterMap);
                     browseDTO.setTeacherNumber(teacherNumber);
 
-                    resultMap.put(Time, browseDTO);
+                    //设置横坐标的日期
+                    browseDTO.setDate(Time);
+                    //添加最后结果，让其形成一个数组
+                    resultList.add(browseDTO);
 
                 }
+                //保存返回结果
+                resultMap.put("list", resultList);
                 return resultMap;
             //获取七天的交易统计量
-            case "1":
+            case "2":
                 //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
                 for (int before = -7; before < 0; before++) {
                     String starttime = CountDateUtil.getBeforeDay(before);
@@ -135,8 +135,8 @@ public class PeopleAnalysisController {
                 }
                 break;
             //获取三十天的交易统计量
-            case "2":
-                //获取距离当前时间的最近三十天的时间,即获取七天前的时间戳
+            case "3":
+                //获取距离当前时间的最近三十天的时间,即获取三十天天前的时间戳
                 for (int before = -30; before < 0; before++) {
                     String starttime = CountDateUtil.getBeforeDay(before);
                     String[] array = starttime.split(" ");
@@ -144,12 +144,27 @@ public class PeopleAnalysisController {
                     timeList.add(starttime);
                 }
                 break;
-            //搜索框中是时间
+            //搜索框中的时间
             default:
-                //测试中
+                //分割时间格式，获取开始时间和结束时间
+                String[] times = time.split("~");
+                //获取开始时间和借结束时间的相差天数
+                Long differentDay = CountDateUtil.getDatePoor(times[0] + " 00:00:00", times[1] + " 23:59:59");
+                //将long类型转换为int
+                int day = new Long(differentDay).intValue();
+                //限制时间的显示长度
+                if (day > PageConsts.ANALYSIS_DAY_NUMBER){
+                    day = PageConsts.ANALYSIS_DAY_NUMBER;
+                }
+                //获取距离当前时间的最近三十天的时间,即获取三十天天前的时间戳
+                for (int before = -day; before < 0; before++) {
+                    String starttime = CountDateUtil.getBeforeDay(before);
+                    String[] array = starttime.split(" ");
+                    starttime = array[0];
+                    timeList.add(starttime);
+                }
                 break;
         }
-
 
         //过去多少天的程度
         int length = timeList.size();
@@ -194,10 +209,20 @@ public class PeopleAnalysisController {
             parameterMap.put("peopleType", 2);
             int visitorNumber = browseService.countBrowseNumber(parameterMap);
             browseDTO.setVisitorNumber(visitorNumber);
-            resultMap.put(Time, browseDTO);
+
+            //获取坐标时间月与日显示格式
+            Time = Time.substring(5, 10);
+            //设置横坐标的日期
+            browseDTO.setDate(Time);
+            //添加最后结果，让其形成一个数组
+            resultList.add(browseDTO);
         }
 
+        //保存返回结果
+        resultMap.put("list", resultList);
+
         return resultMap;
+
     }
 
     /**
@@ -211,8 +236,11 @@ public class PeopleAnalysisController {
     public Map userAnalysis(@RequestParam(value = "time") String time) {
         //用来保存返回给前端数据的hashMap
         Map resultMap = new LinkedHashMap(16);
+        //声明保存最后结果的列表，保存hashMap
+        List resultList = new LinkedList();
         //设置保存开始时间和结束时间的map
         Map parameterMap = new HashMap<>(16);
+
         //判断前端参数的值是否符合要求
         if (time == null || "".equals(time)) {
             resultMap.put("msg", "页面数传输有误!");
@@ -243,18 +271,17 @@ public class PeopleAnalysisController {
                 stringBuilder.append(endTime);
                 stringBuilder.append(" HH:00:00");
                 for (int i = 0; i < 24; i++) {
-                    String Time ;
-                    if (i < 10 ) {
+                    String Time;
+                    if (i < 10) {
                         stringBuilder.replace(11, 13, "0" + i);
                         String start = stringBuilder.toString();
                         Time = start;
-                        if (i + 1 == 10){
+                        if (i + 1 == 10) {
                             stringBuilder.replace(11, 13, "" + (i + 1));
-                        }else {
+                        } else {
                             stringBuilder.replace(11, 13, "0" + (i + 1));
 
                         }
-
                         String end = stringBuilder.toString();
 
                         //设置用户查看数据的开始时间和结束时间
@@ -285,12 +312,14 @@ public class PeopleAnalysisController {
                     int teacherNumber = browseService.countBrowseNumber(parameterMap);
                     browseDTO.setTeacherNumber(teacherNumber);
 
-                    resultMap.put(Time, browseDTO);
-
+                    //设置横坐标的日期
+                    browseDTO.setDate(Time);
+                    //添加最后结果，让其形成一个数组
+                    resultList.add(browseDTO);
                 }
                 return resultMap;
             //获取七天的交易统计量
-            case "1":
+            case "2":
                 //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
                 for (int before = -7; before < 0; before++) {
                     String starttime = CountDateUtil.getBeforeDay(before);
@@ -300,7 +329,7 @@ public class PeopleAnalysisController {
                 }
                 break;
             //获取三十天的交易统计量
-            case "2":
+            case "3":
                 //获取距离当前时间的最近三十天的时间,即获取七天前的时间戳
                 for (int before = -30; before < 0; before++) {
                     String starttime = CountDateUtil.getBeforeDay(before);
@@ -311,7 +340,23 @@ public class PeopleAnalysisController {
                 break;
             //搜索框中是时间
             default:
-                //测试中
+                //分割时间格式，获取开始时间和结束时间
+                String[] times = time.split("~");
+                //获取开始时间和借结束时间的相差天数
+                Long differentDay = CountDateUtil.getDatePoor(times[0] + " 00:00:00", times[1] + " 23:59:59");
+                //将long类型转换为int
+                int day = new Long(differentDay).intValue();
+                //限制时间的显示长度
+                if (day > PageConsts.ANALYSIS_DAY_NUMBER){
+                    day = PageConsts.ANALYSIS_DAY_NUMBER;
+                }
+                //获取距离当前时间的最近三十天的时间,即获取三十天天前的时间戳
+                for (int before = -day; before < 0; before++) {
+                    String starttime = CountDateUtil.getBeforeDay(before);
+                    String[] array = starttime.split(" ");
+                    starttime = array[0];
+                    timeList.add(starttime);
+                }
                 break;
         }
 
@@ -329,7 +374,7 @@ public class PeopleAnalysisController {
             //设置一天的结束时间，涉及到秒
             endBuilder = new StringBuilder();
 
-
+            //添加新对象到字符串中(横坐标)
             startBuilder.append(Time);
             //设置当天的凌晨时间
             startBuilder.append(" 00:00:00");
@@ -356,8 +401,16 @@ public class PeopleAnalysisController {
             int studentNumber = userService.countUserNumberByType(parameterMap);
             browseDTO.setStudentNumber(studentNumber);
 
-            resultMap.put(Time, browseDTO);
+            //获取坐标时间月与日显示格式
+            Time = Time.substring(5, 10);
+            //设置横坐标的日期
+            browseDTO.setDate(Time);
+            //添加最后结果，让其形成一个数组
+            resultList.add(browseDTO);
         }
+
+        //保存返回结果
+        resultMap.put("list", resultList);
 
         return resultMap;
     }

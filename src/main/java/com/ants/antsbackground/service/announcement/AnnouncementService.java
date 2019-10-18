@@ -1,7 +1,6 @@
 package com.ants.antsbackground.service.announcement;
 
-import com.ants.antsbackground.dto.AnnouncementDTO;
-import com.ants.antsbackground.dto.DecorationDTO;
+import com.ants.antsbackground.dto.feedback.DecorationDTO;
 import com.ants.antsbackground.entity.announcement.Announcement;
 import org.springframework.stereotype.Service;
 

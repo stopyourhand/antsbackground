@@ -1,6 +1,6 @@
 package com.ants.antsbackground.mapper.commodity;
 
-import com.ants.antsbackground.dto.AuditDTO;
+import com.ants.antsbackground.dto.commodity.AuditDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

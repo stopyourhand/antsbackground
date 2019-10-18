@@ -2,7 +2,7 @@ package com.ants.antsbackground.controller.analysis;
 
 import com.ants.antsbackground.constant.ClassifyContst;
 import com.ants.antsbackground.constant.PageConsts;
-import com.ants.antsbackground.dto.AnalysisDTO;
+import com.ants.antsbackground.dto.analysis.AnalysisDTO;
 import com.ants.antsbackground.entity.commodity.GiveGoods;
 import com.ants.antsbackground.entity.commodity.IdleGoods;
 import com.ants.antsbackground.entity.commodity.LeaseGoods;
@@ -64,6 +64,7 @@ public class GoodsAnalysisController {
     /**
      * 访问统计模块中发布分析功能
      * time -> 0:今天 1:昨天 2:最近7天 3:最近30天 4:搜索时间
+     *
      * @param currentPage
      * @param time
      * @return
@@ -77,19 +78,20 @@ public class GoodsAnalysisController {
         /**
          * 下面是完成交易的统计
          */
-        String endTime = "";
-        String startTime = "";
+
+        //设置时间格式并且获取当前时间
+        Date nowDate = new Date();
+        //声明设置时间格式的变量
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //设置离当前日期的前几天的变量
         int before = 0;
-        Date nowDate = null;
-        SimpleDateFormat simpleDateFormat = null;
+        //声明开始时间和结束时间的变量
+        String startTime = "";
+        String endTime = simpleDateFormat.format(nowDate);
+        //判断获取指定时间的数据量0：今天 1：
         switch (time) {
             //获取今天的交易统计量
             case "0":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
                 StringBuilder stringBuilder = new StringBuilder();
                 //分割年-月-日 时:分:秒
                 String[] timeArray = endTime.split(" ");
@@ -103,47 +105,28 @@ public class GoodsAnalysisController {
                 break;
             //获取昨天的交易统计量
             case "1":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
                 //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
                 before = -1;
                 startTime = CountDateUtil.getBeforeDay(before);
                 break;
             //获取七天的交易统计量
             case "2":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
                 //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
                 before = -7;
                 startTime = CountDateUtil.getBeforeDay(before);
                 break;
             //获取三十天的交易统计量
             case "3":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
                 //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
                 before = -30;
                 startTime = CountDateUtil.getBeforeDay(before);
                 break;
-            //获取三十天的交易统计量
+            //获取搜索框内的时间端段的交易数据
             default:
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
-                //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
-                before = -30;
-                startTime = CountDateUtil.getBeforeDay(before);
+                //获取搜索框内的开始时间和结束时间
+                String[] times = time.split("~");
+                startTime = times[0] + " 00:00:00";
+                endTime = times[1] + " 23:59:59";
                 break;
         }
 
@@ -160,21 +143,20 @@ public class GoodsAnalysisController {
         parameterMap.put("endTime", endTime);
         parameterMap.put("startTime", startTime);
 
-
         /**
          * 获取闲置，寻求，租赁，赠送四种不同类型的商品的所属的大分类为书籍的数量
          */
         parameterMap.put("start", ClassifyContst.BOOKS_HEAD);
-        parameterMap.put("end",ClassifyContst.BOOKS_TAIL);
+        parameterMap.put("end", ClassifyContst.BOOKS_TAIL);
 
-
-        for (int i = 1; i < Lengths;){
-            if (i != 1){
+        //设置时间的格式
+        for (int i = 1; i < Lengths; ) {
+            if (i != 1) {
                 parameterMap.put("start", i);
-                parameterMap.put("end",i + 7);
-            }else {
+                parameterMap.put("end", i + 7);
+            } else {
                 parameterMap.put("start", i);
-                parameterMap.put("end",i + 6);
+                parameterMap.put("end", i + 6);
             }
 
             //从数据库中获取对应商品类型的各分类的统计数量
@@ -183,68 +165,56 @@ public class GoodsAnalysisController {
             int seekClassifyNumber = seekService.countReleaseClassifySeekNumber(parameterMap);
             int giveClassifyNumber = giveService.countReleaseClassifyGiveNumber(parameterMap);
             //判断从数据库中获取的数据是否符合要求
-            if (idleClassifyNumber < 0 || leaseClassifyNumber < 0 || seekClassifyNumber < 0 || giveClassifyNumber < 0){
+            if (idleClassifyNumber < 0 || leaseClassifyNumber < 0 || seekClassifyNumber < 0 || giveClassifyNumber < 0) {
                 resultMap.put("msg", "网站获取数据错误，请重新请求!");
                 return resultMap;
             }
 
             //根据i(小分类的代号)的不同表示对应区间的大分类
-            switch (i){
+            switch (i) {
                 case 1:
                     //获取书籍的发布的统计数量
                     booksNumber = idleClassifyNumber + leaseClassifyNumber + seekClassifyNumber + giveClassifyNumber;
-                    resultMap.put("booksNumber",booksNumber);
-                break;
+                    resultMap.put("booksNumber", booksNumber);
+                    break;
                 case 8:
                     //获取文具的发布的统计数量
                     stationeryNumber = idleClassifyNumber + leaseClassifyNumber + seekClassifyNumber + giveClassifyNumber;
-                    resultMap.put("stationeryNumber",stationeryNumber);
+                    resultMap.put("stationeryNumber", stationeryNumber);
                     break;
                 case 16:
                     //获取日常的发布的统计数量
                     dailyNumber = idleClassifyNumber + leaseClassifyNumber + seekClassifyNumber + giveClassifyNumber;
-                    resultMap.put("dailyNumber",dailyNumber);
+                    resultMap.put("dailyNumber", dailyNumber);
                     break;
                 case 24:
                     //获取美妆的发布的统计数量
                     cosmeticsNumber = idleClassifyNumber + leaseClassifyNumber + seekClassifyNumber + giveClassifyNumber;
-                    resultMap.put("cosmeticsNumber",cosmeticsNumber);
+                    resultMap.put("cosmeticsNumber", cosmeticsNumber);
                     break;
                 case 32:
                     //获取食物的发布的统计数量
                     foodNumber = idleClassifyNumber + leaseClassifyNumber + seekClassifyNumber + giveClassifyNumber;
-                    resultMap.put("foodNumber",foodNumber);
+                    resultMap.put("foodNumber", foodNumber);
                     break;
                 case 40:
                     //获取电器的发布的统计数量
                     electricalNumber = idleClassifyNumber + leaseClassifyNumber + seekClassifyNumber + giveClassifyNumber;
-                    resultMap.put("electricalNumber",electricalNumber);
+                    resultMap.put("electricalNumber", electricalNumber);
                     break;
                 default:
                     //获取其他的发布的统计数量
                     othersNumber = idleClassifyNumber + leaseClassifyNumber + seekClassifyNumber + giveClassifyNumber;
-                    resultMap.put("othersNumber",othersNumber);
+                    resultMap.put("othersNumber", othersNumber);
             }
             //对小分类对应的大分类跳转
-            if (i != 1){
+            if (i != 1) {
                 i = i + 8;
-            }else {
+            } else {
                 i = i + 7;
             }
         }
 
-        //计算特定时间内所有交易完成的数据量
-        int allNumber = booksNumber + stationeryNumber + dailyNumber + cosmeticsNumber + foodNumber + electricalNumber +othersNumber;
-        if (allNumber < 0) {
-            resultMap.put("msg", "网站获取数据错误，请重新请求!");
-            return resultMap;
-        }
-        int allPage = (allNumber / PageConsts.ANALYSIS_MANAGEMENT_PAGE_NUMBER) + 1;
-        if (allPage < 0) {
-            resultMap.put("msg", "网站获取数据错误，请重新请求!");
-            return resultMap;
-        }
-        resultMap.put("allPage",allPage);
 
         //将返回给前端数据的参数进行转换
         List<AnalysisDTO> analysisDTOList = new LinkedList<>();
@@ -257,6 +227,7 @@ public class GoodsAnalysisController {
         //从数据库中获取交易分析的列出不同时间段的“发布赠送”的商品的信息
         List<GiveGoods> giveGoodsList = giveService.listGiveAnalysis(parameterMap);
 
+        //设置每个类型(闲置，寻求，租赁，赠送)的数据类型的数量的长度
         int[] lengthArray = {idleGoodsList.size(), leaseGoodsList.size(), seekGoodsList.size(), giveGoodsList.size()};
 
         //保存要传给前端的参数的数据
@@ -267,6 +238,7 @@ public class GoodsAnalysisController {
         SeekGoods seekGoods = null;
         GiveGoods giveGoods = null;
         int Length = lengthArray.length;
+
         //type表示对应的商品类型 0:闲置  1:赠送  2:租赁 3:寻求
         for (int type = 0; type < Length; type++) {
             int length = lengthArray[type];
@@ -284,7 +256,6 @@ public class GoodsAnalysisController {
                         //0:闲置  1:赠送  2:租赁 3:寻求
                         goodsState = 0;
                         price = idleGoods.getGoodsPrice();
-                        System.out.println("闲置");
                         break;
                     //租赁
                     case 1:
@@ -320,27 +291,62 @@ public class GoodsAnalysisController {
                 analysisDTO = new AnalysisDTO();
                 //根据对象的小分类获取所属大分类名称
                 switch (goodsClass) {
-                    case 1:case 2:case 3:case 4:case 5:case 6:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
                     case 7:
                         analysisDTO.setClassify("书籍");
                         break;
-                    case 8:case 9:case 10:case 11:case 12:case 13:case 14:
+                    case 8:
+                    case 9:
+                    case 10:
+                    case 11:
+                    case 12:
+                    case 13:
+                    case 14:
                     case 15:
                         analysisDTO.setClassify("文具");
                         break;
-                    case 16:case 17:case 18:case 19:case 20:case 21:case 22:
+                    case 16:
+                    case 17:
+                    case 18:
+                    case 19:
+                    case 20:
+                    case 21:
+                    case 22:
                     case 23:
                         analysisDTO.setClassify("日用");
                         break;
-                    case 24:case 25:case 26:case 27:case 28:case 29:case 30:
+                    case 24:
+                    case 25:
+                    case 26:
+                    case 27:
+                    case 28:
+                    case 29:
+                    case 30:
                     case 31:
                         analysisDTO.setClassify("美妆");
                         break;
-                    case 32:case 33:case 34:case 35:case 36:case 37:case 38:
+                    case 32:
+                    case 33:
+                    case 34:
+                    case 35:
+                    case 36:
+                    case 37:
+                    case 38:
                     case 39:
                         analysisDTO.setClassify("食品");
                         break;
-                    case 40:case 41:case 42:case 43:case 44:case 45:case 46:
+                    case 40:
+                    case 41:
+                    case 42:
+                    case 43:
+                    case 44:
+                    case 45:
+                    case 46:
                     case 47:
                         analysisDTO.setClassify("电器");
                         break;
@@ -351,21 +357,26 @@ public class GoodsAnalysisController {
                 analysisDTO.setName(goodsName);
                 analysisDTO.setGoodsState(goodsState);
                 analysisDTO.setPrice(price);
-
                 analysisDTOList.add(analysisDTO);
             }
         }
 
-        resultMap.put("analysisList", analysisDTOList);
+        //计算特定时间内所有交易完成的数据量
+        int allNumber = analysisDTOList.size();
+        //获取总页数
+        int allPage = (allNumber / PageConsts.ANALYSIS_MANAGEMENT_PAGE_NUMBER) + 1;
+        resultMap.put("allPage", allPage);
 
+        resultMap.put("analysisList", analysisDTOList);
         return resultMap;
     }
 
 
     /**
      * 访问统计模块中交易分析功能
-     *
+     * <p>
      * time -> 0:今天 1:昨天 2:最近7天 3:最近30天 4:搜索时间
+     *
      * @param currentPage
      * @param time
      * @return
@@ -388,19 +399,18 @@ public class GoodsAnalysisController {
         /**
          * 下面是完成交易的统计
          */
-        String endTime = "";
-        String startTime = "";
+        //设置获取与当前时间的前的指定时间
         int before = 0;
-        Date nowDate = null;
-        SimpleDateFormat simpleDateFormat = null;
+        //设置当前时间并且设置时间格式
+        Date nowDate = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //设置开始时间和结束时间
+        String startTime = "";
+        String endTime = simpleDateFormat.format(nowDate);
+
         switch (time) {
             //获取今天的交易统计量
             case "0":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
                 StringBuilder stringBuilder = new StringBuilder();
                 //分割年-月-日 时:分:秒
                 String[] timeArray = endTime.split(" ");
@@ -414,50 +424,30 @@ public class GoodsAnalysisController {
                 break;
             //获取昨天的交易统计量
             case "1":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
                 //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
                 before = -1;
                 startTime = CountDateUtil.getBeforeDay(before);
                 break;
             //获取七天的交易统计量
             case "2":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
                 //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
                 before = -7;
                 startTime = CountDateUtil.getBeforeDay(before);
                 break;
             //获取三十天的交易统计量
             case "3":
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
                 //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
                 before = -30;
                 startTime = CountDateUtil.getBeforeDay(before);
                 break;
-            //获取三十天的交易统计量
+            //获取搜索框内的时间段内的交易数据
             default:
-                //获取当前时间
-                nowDate = new Date();
-                simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                endTime = simpleDateFormat.format(nowDate);
-
-                //获取距离当前时间的最近七天的时间,即获取七天前的时间戳
-                before = -30;
-                startTime = CountDateUtil.getBeforeDay(before);
+                //分割时间数据，获取开始时间和结束时间
+                String[] times = time.split("~");
+                startTime = times[0] + " 00:00:00";
+                endTime = times[1] + " 23:59:59";
                 break;
         }
-
 
         //设置保存开始时间和结束时间的map
         Map parameterMap = new HashMap<>(16);
@@ -472,76 +462,61 @@ public class GoodsAnalysisController {
         parameterMap.put("length", PageConsts.ANALYSIS_MANAGEMENT_PAGE_NUMBER);
 
         //根据i(小分类的代号)的不同表示对应区间的大分类
-        for (int i = 1; i < Lengths;){
-            if (i == 1){
+        for (int i = 1; i < Lengths; ) {
+            if (i == 1) {
                 parameterMap.put("start", i);
-                parameterMap.put("end",i + 6);
-            }else {
+                parameterMap.put("end", i + 6);
+            } else {
                 parameterMap.put("start", i);
-                parameterMap.put("end",i + 7);
+                parameterMap.put("end", i + 7);
             }
 
-
-
             //根据i(小分类的代号)的不同表示对应区间的大分类
-            switch (i){
+            switch (i) {
                 case 1:
                     //获取书籍的发布的统计数量
                     booksNumber = sellService.countReleaseClassifySellNumber(parameterMap);
-                    resultMap.put("booksNumber",booksNumber);
+                    resultMap.put("booksNumber", booksNumber);
                     break;
                 case 8:
                     //获取文具的发布的统计数量
                     stationeryNumber = sellService.countReleaseClassifySellNumber(parameterMap);
-                    resultMap.put("stationeryNumber",stationeryNumber);
+                    resultMap.put("stationeryNumber", stationeryNumber);
                     break;
                 case 16:
                     //获取日常的发布的统计数量
                     dailyNumber = sellService.countReleaseClassifySellNumber(parameterMap);
-                    resultMap.put("dailyNumber",dailyNumber);
+                    resultMap.put("dailyNumber", dailyNumber);
                     break;
                 case 24:
                     //获取美妆的发布的统计数量
                     cosmeticsNumber = sellService.countReleaseClassifySellNumber(parameterMap);
-                    resultMap.put("cosmeticsNumber",cosmeticsNumber);
+                    resultMap.put("cosmeticsNumber", cosmeticsNumber);
                     break;
                 case 32:
                     //获取食物的发布的统计数量
                     foodNumber = sellService.countReleaseClassifySellNumber(parameterMap);
-                    resultMap.put("foodNumber",foodNumber);
+                    resultMap.put("foodNumber", foodNumber);
                     break;
                 case 40:
                     //获取电器的发布的统计数量
                     electricalNumber = sellService.countReleaseClassifySellNumber(parameterMap);
-                    resultMap.put("electricalNumber",electricalNumber);
+                    resultMap.put("electricalNumber", electricalNumber);
                     break;
                 default:
                     //获取其他的发布的统计数量
                     othersNumber = sellService.countReleaseClassifySellNumber(parameterMap);
-                    resultMap.put("othersNumber",othersNumber);
+                    resultMap.put("othersNumber", othersNumber);
 
             }
 
             //对小分类对应的大分类跳转
-            if (i != 1){
+            if (i != 1) {
                 i = i + 8;
-            }else {
+            } else {
                 i = i + 7;
             }
         }
-
-        //计算特定时间内所有交易完成的数据量
-        int allNumber = booksNumber + stationeryNumber + dailyNumber + cosmeticsNumber + foodNumber + electricalNumber +othersNumber;
-        if (allNumber < 0) {
-            resultMap.put("msg", "网站获取数据错误，请重新请求!");
-            return resultMap;
-        }
-        int allPage = (allNumber / PageConsts.ANALYSIS_MANAGEMENT_PAGE_NUMBER) + 1;
-        if (allPage < 0) {
-            resultMap.put("msg", "网站获取数据错误，请重新请求!");
-            return resultMap;
-        }
-        resultMap.put("allPage",allPage);
 
         //将返回给前端数据的参数进行转换
         List<AnalysisDTO> analysisDTOList = new LinkedList<>();
@@ -553,8 +528,10 @@ public class GoodsAnalysisController {
         //暂时保存从数据库中获取的信息的每个对象的数据
         Sell sell = null;
         for (int i = 0; i < length; i++) {
+            //获取商品交易的对象
             sell = sellList.get(i);
 
+            //设置次数数据
             int goodsClass = sell.getGoodsClass();
             String goodsName = sell.getGoodsName();
             int goodsState = sell.getGoodsState();
@@ -563,27 +540,62 @@ public class GoodsAnalysisController {
             analysisDTO = new AnalysisDTO();
             //根据对象的小分类获取所属大分类名称
             switch (goodsClass) {
-                case 1:case 2:case 3:case 4:case 5:case 6:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
                 case 7:
                     analysisDTO.setClassify("书籍");
                     break;
-                case 8:case 9:case 10:case 11:case 12:case 13:case 14:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
                 case 15:
                     analysisDTO.setClassify("文具");
                     break;
-                case 16:case 17:case 18:case 19:case 20:case 21:case 22:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
                 case 23:
                     analysisDTO.setClassify("日用");
                     break;
-                case 24:case 25:case 26:case 27:case 28:case 29:case 30:
+                case 24:
+                case 25:
+                case 26:
+                case 27:
+                case 28:
+                case 29:
+                case 30:
                 case 31:
                     analysisDTO.setClassify("美妆");
                     break;
-                case 32:case 33:case 34:case 35:case 36:case 37:case 38:
+                case 32:
+                case 33:
+                case 34:
+                case 35:
+                case 36:
+                case 37:
+                case 38:
                 case 39:
                     analysisDTO.setClassify("食品");
                     break;
-                case 40:case 41:case 42:case 43:case 44:case 45:case 46:
+                case 40:
+                case 41:
+                case 42:
+                case 43:
+                case 44:
+                case 45:
+                case 46:
                 case 47:
                     analysisDTO.setClassify("电器");
                     break;
@@ -598,10 +610,21 @@ public class GoodsAnalysisController {
             analysisDTOList.add(analysisDTO);
         }
 
+        //计算特定时间内所有交易完成的数据量
+        int allNumber = analysisDTOList.size();
+        if (allNumber < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        int allPage = (allNumber / PageConsts.ANALYSIS_MANAGEMENT_PAGE_NUMBER) + 1;
+        if (allPage < 0) {
+            resultMap.put("msg", "网站获取数据错误，请重新请求!");
+            return resultMap;
+        }
+        resultMap.put("allPage", allPage);
+
         resultMap.put("analysisList", analysisDTOList);
         return resultMap;
     }
-
-
 
 }

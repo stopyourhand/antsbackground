@@ -1,4 +1,4 @@
-package com.ants.antsbackground.dto;
+package com.ants.antsbackground.dto.announcement;
 
 import lombok.Data;
 

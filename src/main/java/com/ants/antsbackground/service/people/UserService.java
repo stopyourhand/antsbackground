@@ -1,6 +1,6 @@
 package com.ants.antsbackground.service.people;
 
-import com.ants.antsbackground.dto.UserDTO;
+import com.ants.antsbackground.dto.people.UserDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

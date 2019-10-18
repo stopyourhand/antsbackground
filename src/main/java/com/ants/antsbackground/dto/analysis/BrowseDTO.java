@@ -1,4 +1,4 @@
-package com.ants.antsbackground.dto;
+package com.ants.antsbackground.dto.analysis;
 
 import lombok.Data;
 
@@ -9,6 +9,8 @@ import lombok.Data;
  */
 @Data
 public class BrowseDTO {
+    /** 日期 */
+    private String date;
     /** 学生访问次数 */
     private Integer studentNumber;
     /** 教师访问次数 */

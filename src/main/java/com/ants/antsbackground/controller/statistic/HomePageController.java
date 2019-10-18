@@ -2,12 +2,13 @@ package com.ants.antsbackground.controller.statistic;
 
 import com.ants.antsbackground.constant.ClassifyContst;
 import com.ants.antsbackground.constant.PersonalContst;
-import com.ants.antsbackground.dto.PersonalDataDTO;
+import com.ants.antsbackground.dto.people.PersonalDataDTO;
 import com.ants.antsbackground.service.classify.ClassificationService;
 import com.ants.antsbackground.service.commodity.GiveService;
 import com.ants.antsbackground.service.commodity.IdleService;
 import com.ants.antsbackground.service.commodity.LeaseService;
 import com.ants.antsbackground.service.commodity.SeekService;
+import com.ants.antsbackground.service.people.BrowseService;
 import com.ants.antsbackground.service.people.UserService;
 import com.ants.antsbackground.service.sell.SellService;
 import com.ants.antsbackground.util.CountDateUtil;
@@ -19,10 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * 这个控制器是关于一些和统计相关的业务处理，例如首页的发布物品的统计
@@ -56,6 +54,8 @@ public class HomePageController {
     @Autowired
     private ClassificationService classificationService;
 
+    @Autowired
+    private BrowseService browseService;
 
     /**
      * 获取后台管理系统首页信息,包括 ->
@@ -106,10 +106,6 @@ public class HomePageController {
             return resultMap;
         }
         resultMap.put("userRegisterNumber", userRegisterNumber);
-
-        /**
-         * 下面是关于发布商品的统计
-         */
 
         //计算最近七天的发布闲置的统计数量
         int releaseIdleNumber = idleService.countReleaseIdleNumber(parameterMap);
@@ -306,7 +302,6 @@ public class HomePageController {
             return resultMap;
         }
         resultMap.put("othersNumber",othersNumber);
-
         return resultMap;
     }
 
@@ -327,7 +322,7 @@ public class HomePageController {
     @GetMapping(value = "/getSystemMessage")
     public Map<String, String> getSystemMessage() {
         //设置保存返回给前端信息数据的hashMap
-        Map<String, String> resultMap = new HashMap<>(16);
+        Map<String,String> resultMap = new HashMap<>(16);
         //获取系统参数文件信息
         Properties properties = System.getProperties();
 
@@ -403,8 +398,6 @@ public class HomePageController {
         }
         String usedMemory = String.valueOf(usedMemoryL);
         resultMap.put("usedMemory", usedMemory + "M");
-
-
         return resultMap;
     }
 }

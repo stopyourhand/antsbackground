@@ -1,6 +1,6 @@
 package com.ants.antsbackground.service.commodity;
 
-import com.ants.antsbackground.dto.AuditDTO;
+import com.ants.antsbackground.dto.commodity.AuditDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

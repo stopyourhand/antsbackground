@@ -1,13 +1,8 @@
 package com.ants.antsbackground.impl.people;
 
-import com.ants.antsbackground.dto.DecorationDTO;
-import com.ants.antsbackground.dto.UserDTO;
-import com.ants.antsbackground.dto.VisitorDTO;
-import com.ants.antsbackground.entity.announcement.Announcement;
+import com.ants.antsbackground.dto.people.VisitorDTO;
 import com.ants.antsbackground.entity.people.Visitor;
-import com.ants.antsbackground.mapper.people.UserMapper;
 import com.ants.antsbackground.mapper.people.VisitorMapper;
-import com.ants.antsbackground.service.people.UserService;
 import com.ants.antsbackground.service.people.VisitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

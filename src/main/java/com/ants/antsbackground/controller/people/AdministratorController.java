@@ -75,10 +75,8 @@ public class AdministratorController {
             //调用学校接口进行登录
             String accounts = String.valueOf(account);
             resultMap = interfaceAnalysisUtil.analysis(accounts, passWord);
-
             return resultMap;
         }
-
 
     }
 
@@ -102,7 +100,6 @@ public class AdministratorController {
 
         resultMap.put("judge", true);
         return resultMap;
-
     }
 
 

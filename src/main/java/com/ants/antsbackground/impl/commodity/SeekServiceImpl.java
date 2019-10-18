@@ -1,10 +1,9 @@
 package com.ants.antsbackground.impl.commodity;
 
-import com.ants.antsbackground.dto.AuditDTO;
-import com.ants.antsbackground.dto.CommodityDTO;
+import com.ants.antsbackground.dto.commodity.AuditDTO;
+import com.ants.antsbackground.dto.commodity.CommodityDTO;
 import com.ants.antsbackground.entity.commodity.SeekGoods;
 import com.ants.antsbackground.mapper.commodity.SeekMapper;
-import com.ants.antsbackground.service.commodity.IdleService;
 import com.ants.antsbackground.service.commodity.SeekService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

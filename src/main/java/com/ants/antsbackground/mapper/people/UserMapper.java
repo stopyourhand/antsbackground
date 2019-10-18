@@ -1,6 +1,6 @@
 package com.ants.antsbackground.mapper.people;
 
-import com.ants.antsbackground.dto.UserDTO;
+import com.ants.antsbackground.dto.people.UserDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
