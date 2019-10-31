@@ -14,6 +14,7 @@ import java.util.Date;
  */
 public class CountDateUtil {
 
+
     /**
      * 获取两个时间的相差的天数
      *
@@ -67,9 +68,6 @@ public class CountDateUtil {
         return simpleDateFormat.format(beforeDate);
     }
 
-    public static void main(String[] args) {
-
-    }
 
 
 }

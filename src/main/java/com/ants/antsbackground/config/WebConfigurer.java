@@ -25,7 +25,6 @@ public class WebConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        System.out.println("config==============");
         registry.addInterceptor(new LoginHandlerInterceptor())
                 //添加拦截请求页面
                 .addPathPatterns("/**")

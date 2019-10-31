@@ -23,7 +23,6 @@ public class BeanConfig {
      */
     @Bean("ExecutorService")
     public ExecutorService getExecutorPool(){
-        System.out.println("=====已经注入Spring容器中=====");
         return Executors.newFixedThreadPool(THREAD_POOL_NUMBER);
     }
 }

@@ -1,12 +1,9 @@
 package com.ants.antsbackground.util;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.json.JSONObject;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
